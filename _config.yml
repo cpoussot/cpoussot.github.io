@@ -1,2 +1,5 @@
 #theme: jekyll-theme-minimal
-theme: gravity
+theme: jekyll-theme-cayman
+#theme: jekyll-theme-slate
+#theme: jekyll-theme-architect
+#theme: jekyll-theme-leap-day
