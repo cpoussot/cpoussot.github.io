@@ -7,10 +7,6 @@
 ##### h5 Heading
 ###### h6 Heading
 
- {% raw %}
-  $$a^2 + b^2 = c^2$$ 
- {% endraw %}
-
 $$
 H(x_1,\cdots,x_n) = \sum
 $$
