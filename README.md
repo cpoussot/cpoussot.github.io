@@ -7,6 +7,10 @@
 ##### h5 Heading
 ###### h6 Heading
 
+ {% raw %}
+  $$a^2 + b^2 = c^2$$ --> note that all equations between these tags will not need escaping! 
+ {% endraw %}
+
 $$
 H(x_1,\cdots,x_n) = \sum
 $$
