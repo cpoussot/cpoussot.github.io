@@ -7,9 +7,9 @@
 ##### h5 Heading
 ###### h6 Heading
 
-
+$$
 H(x_1,\cdots,x_n)
-
+$$
 
 Alternatively, for H1 and H2, an underline-ish style:
 
