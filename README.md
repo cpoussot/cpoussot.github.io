@@ -8,7 +8,7 @@
 ###### h6 Heading
 
 $$
-H(x_1,\cdots,x_n)
+H(x_1,\cdots,x_n) = \sum
 $$
 
 Alternatively, for H1 and H2, an underline-ish style:
