@@ -7,9 +7,9 @@
 ##### h5 Heading
 ###### h6 Heading
 
-$$
+\begin{equation}
 H(x_1,\cdots,x_n) = \sum
-$$
+\end{equation}
 
 Alternatively, for H1 and H2, an underline-ish style:
 
