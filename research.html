@@ -53,30 +53,46 @@
 									</div>
 									<img src="images/research/2024_maxwell.gif" width="60%" height="60%"><br>
 								</section>
-								<!-- MAXWELL -->
+								<!-- MLF -->
 								<section id="banner">
 									<div class="content">
 										<h3>The multivariate Loewner framework :
 											Taming the curse of dimensionality and the Kolmogorov superposition theorem (May 2024)</h3>
 										<p>
 											<ul>
-											<li>We propose a generalized realization form for rational functions in $n$-variables (for any $n$), which are described in the Lagrange basis;</li>
-											<li>We show that the $n$-dimensional Loewner matrix can be written as the solution of a series of cascaded Sylvester equations;</li>
-											<li>We demonstrate that the required variables to be determined, i.e. the barycentric coefficients, can be computed using a sequence of small-scale 1-dimensional Loewner matrices instead of the large-scale (NxN) n-dimensional one, therefore drastically reducing the both computational effort and memory needs, and improving accuracy;</li>
+											<li>We propose a generalized realization form for rational functions in n-variables (in the Lagrange basis);</li>
+											<li>We show that the n-dimensional Loewner matrix is the solution of a series of cascaded Sylvester equations;</li>
+											<li>We demonstrate that the barycentric coefficients can be computed using a sequence of small-scale 1-dimensional Loewner matrices instead of the large-scale (NxN) n-dimensional one, therefore drastically reducing the both computational effort and memory needs, and improving accuracy;</li>
 											<li>We show that this decomposition achieves variables decoupling; thus connecting the Loewner framework for rational interpolation of multivariate functions and the Kolmogorov Superposition Theorem (KST), restricted to rational functions. The result is the formulation of KST for the special case of rational functions;</li>
 											<li>Connections with KAN neural nets follows (detailed in future work).</li>
-											<li>We propose a generalized realization form for rational functions in $n$-variables (for any $n$), which are described in the Lagrange basis;
 											</ul>
 										</p>
 										<p>
+											Figure compares flop: cascaded n-D Loewner worst-case upper bounds for varying number of variables n, while the full n-D Loewner is O(N^3) (black dashed); comparison with O(N^2) and O(N log(N)) references are shown in dash-dotted and dotted black lines.
+										</p>
+										<p>
 											A. C. Antoulas, I. V. Gosea and C. Poussot-Vassal, "On the Loewner framework, the Kolmogorov superposition theorem, and the curse of dimensionality", in SIAM Review (Research Spotlight)<br>
-											>> arXiv <br>
-											>> GitHub code <br> 
-											>> YouTube video<br>
-											>> <a href="https://openscience.isae-supaero.fr/Default/doc/SYRACUSE/18523/port-hamiltonian-reduced-order-modelling-of-the-2d-maxwell-equations?_lg=en-US" target="_blank">ISAE Open Science</a>
+											>> <a href="https://arxiv.org/abs/2405.00495" target="_blank">arXiv</a><br>
+											>> <a href="https://github.com/cpoussot/mLF" target="_blank">GitHub code</a> <br> 
+											>> <a href="https://youtu.be/M2SX3C4VCt8" target="_blank">YouTube video</a><br>
 										</p>
 									</div>
 									<img src="images/research/2024_mlf.png" width="60%" height="60%"><br>
+								</section>
+								<!-- RIEMANN -->
+								<section id="banner">
+									<div class="content">
+										<h3>Riemann zeta function zeros and prime counting function approximation (June 2022)</h3>
+										<p>
+											The realisation landmark of Mayo and Antoulas, through the lens of the modified Loewner framework is used to approximate the non-trivial zeros of the famous Riemann zeta function. These approximated zeros are then used to approximate the Riemann prime counting function, as illustrated in the right frame.<br>
+											Figure compares of the prime counting function (thin red) with the Riemann formulae including non-trivial zeros approximated by the Loewner approach (solid blue). As the number of non-trivial (harmonics) zeros increases, the step shape is revealed.
+										</p>
+										<p>
+											C. Poussot-Vassal, I.V. Gosea, P. Vuillemin and A.C. Antoulas "Loewner framework for Riemann zeta function non-trivial zeros and prime counting function approximation", still in preparation.</br>
+											>> <a href="https://drive.google.com/file/d/1Xuspt2ufyAwPGay3rmelH7-cUVd0iH8R/view?usp=sharing" target="_blank">slides</a>
+										</p>
+									</div>
+									<img src="images/research/2022_riemann.gif" width="60%" height="60%"><br>
 								</section>
 						</div>
 					</div>
@@ -102,11 +118,9 @@
 											<li><a href="talks.html">Talks</a></li>
 											<li><a href="book.html">Book & Chapters</a></li>
 											<li><a href="benchmarks.html">Benchmarks</a></li>
+											<li><a href="blog.html">Blog & Taught</a></li>
 										</ul>
 									</li>
-									<!--
-									<li><a href="Blog.html">Blog</a></li>
-									-->
 								</ul>
 							</nav>
 							
