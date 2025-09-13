@@ -6,6 +6,17 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+		<!-- <script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js" defer></script>-->
+		<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-svg.js"></script>
+		<script>MathJax = {
+			  tex: {
+				inlineMath: {'[+]': [['$', '$']]}
+			  },
+			  svg: {
+				fontCache: 'global'
+			  }
+			};
+		</script>
 	</head>
 	<body class="is-preload">
 
@@ -19,9 +30,9 @@
 								<header id="header">
 									<a href="index.html" class="logo"><strong>Charles Poussot-Vassal Homepage</strong></a>
 									<ul class="icons">
-										<li><a href="https://www.linkedin.com/in/charlespoussot/"><span class="label">LinkedIn</span></a></li>
-										<li><a href="https://arxiv.org/search/?searchtype=author&query=Poussot-Vassal%2C+C"><span class="label">arXiv</span></a></li>
-										<li><a href="https://github.com/cpoussot/"><span class="label">GitHub</span></a></li>										
+										<li><a href="https://www.linkedin.com/in/charlespoussot/" target="_blank"><span class="label">LinkedIn</span></a></li>
+										<li><a href="https://arxiv.org/search/?searchtype=author&query=Poussot-Vassal%2C+C" target="_blank"><span class="label">arXiv</span></a></li>
+										<li><a href="https://github.com/cpoussot/" target="_blank"><span class="label">GitHub</span></a></li>										
 									</ul>
 								</header>
 								<!-- TENSOR -->
@@ -62,15 +73,15 @@
 											Taming the curse of dimensionality and the Kolmogorov superposition theorem (May 2024)</h3>
 										<p>
 											<ul>
-											<li>We propose a generalized realization form for rational functions in n-variables (in the Lagrange basis);</li>
-											<li>We show that the n-dimensional Loewner matrix is the solution of a series of cascaded Sylvester equations;</li>
-											<li>We demonstrate that the barycentric coefficients can be computed using a sequence of small-scale 1-dimensional Loewner matrices instead of the large-scale (NxN) n-dimensional one, therefore drastically reducing the both computational effort and memory needs, and improving accuracy;</li>
+											<li>We propose a generalized realization form for rational functions in $n$-variables (in the Lagrange basis);</li>
+											<li>We show that the $n$-dimensional Loewner matrix is the solution of a series of cascaded Sylvester equations;</li>
+											<li>We demonstrate that the barycentric coefficients can be computed using a sequence of small-scale 1-dimensional Loewner matrices instead of the large-scale ($N \times N$) $n$-dimensional one, therefore drastically reducing the both computational effort and memory needs, and improving accuracy;</li>
 											<li>We show that this decomposition achieves variables decoupling; thus connecting the Loewner framework for rational interpolation of multivariate functions and the Kolmogorov Superposition Theorem (KST), restricted to rational functions. The result is the formulation of KST for the special case of rational functions;</li>
 											<li>Connections with KAN neural nets follows (detailed in future work).</li>
 											</ul>
 										</p>
 										<p>
-											Figure compares flop: cascaded n-D Loewner worst-case upper bounds for varying number of variables n, while the full n-D Loewner is O(N^3) (black dashed); comparison with O(N^2) and O(N log(N)) references are shown in dash-dotted and dotted black lines.
+											Figure compares flop: cascaded n-D Loewner worst-case upper bounds for varying number of variables n, while the full n-D Loewner is $\mathcal{O}(N^3)$ (black dashed); comparison with $\mathcal{O}(N^3)$ and $\mathcal{O}(N \log(N))$ references are shown in dash-dotted and dotted black lines.
 										</p>
 										<p>
 											A. C. Antoulas, I. V. Gosea and C. Poussot-Vassal, "On the Loewner framework, the Kolmogorov superposition theorem, and the curse of dimensionality", in SIAM Review (Research Spotlight)<br>
@@ -127,11 +138,49 @@
 										</p>
 										<p>
 											C. Poussot-Vassal, P. Kergus, F. Kerhervé and D. Sipp "<a href="https://doi.org/10.1109/TCST.2021.3070056" target="_blank"> Interpolatory-based data-driven pulsed fluidic actuator control design and experimental validation</a>", in IEEE transaction on Control Systems Technology, Vol. 30(2), March 2022, pp. 852-859.</br>
-											>> <a href="https://arxiv.org/abs/2012.01061" target="_blank">arXiv</a>
+											>> <a href="https://arxiv.org/abs/2012.01061" target="_blank">arXiv</a><br>
 											>> <a href="https://drive.google.com/file/d/1FsVk2AMBNn8X1h7eGPF2zaJRlKKZLZ5L/view?usp=sharing" target="_blank">Video</a>
 										</p>
 									</div>
-									<img src="images/research/2020_pollutant.gif" width="60%" height="60%"><br>
+									<img src="images/research/2020_pfa.jpg" width="60%" height="60%"><br>
+								</section>
+								<!-- GVT -->
+								<section id="banner">
+									<div class="content">
+										<h3>Vibration control demonstrator applied on a Dassault-Aviation Business jet<br>
+											>> Ground Vibration Test (September 2015)<br>
+											>> Flight tests (September 2017)</h3>
+										<p>
+											The vibration attenuation achieved on a Dassaut-Aviation Business Jet Falcon 7X has been done. To this aim, the MDSPACK library has been used to construct, from data, dynamical models of a Dassault-Aviation 7X. Then, a structured H-infinity controller has been designed to attenuate the vibration over a frequency-limited range.
+										</p>
+										<p>
+											Figure shows the Falcon 7X s/n 001 during ground vibration test. 
+										</p>
+										<p>
+											C. Poussot-Vassal, C. Roos, P. Vuillemin, O. Cantinaud and J-P. Lacoste, "<a href="http://dx.doi.org/10.1049/PBCE080E_ch11" target="_blank">Chapter 11: Control-oriented Aeroelastic BizJet Low-order LFT modeling</a>", Control-oriented modelling and identification: theory and practice, M. Lovera Eds. January, 2015, IET - Control Engineering Series 80 (Hardcover).</br>
+											C. Meyer, G. Broux, J. Prodigue, O. Cantinaud and C. Poussot-Vassal, "Demonstration of innovative vibration control on a Falcon Business Jet", in Proceedings of the International Forum on Aeroelasticity and Structural Dynamics (IFASD), Como, Italy, June, 2017.</br>
+											>> <a href="https://drive.google.com/file/d/1H2GqlYkiny_PZND2ekB6swSetoGcmFTK/view?usp=sharing" target="_blank">Video (test)</a><br>
+											>> <a href="https://drive.google.com/file/d/0B984ELNCureRVjd3d3Q3dmozLTQ/view?usp=sharing&resourcekey=0-8bRyhAmu2_-b7Pm7bfhTHQ" target="_blank">Video (interview)</a>
+										</p>
+									</div>
+									<img src="images/research/2015_gvt.jpg" width="60%" height="60%"><br>
+								</section>
+								<!-- WTT -->
+								<section id="banner">
+									<div class="content">
+										<h3>Active gust load alleviation on an Aeroelastic model (May 2015)</h3>
+										<p>
+											In the Onera wind tunnel facility, both trans- and sub-sonic configurations to attenuate gust load, have been obtained thanks to an advanced frequency-domain identification procedure based on data-driven model approximation performed with the MDSPACK library, followed by an active closed-loop control done in the structured H-infinity framework.
+										</p>
+										<p>
+											Figure shows the xperimental set-up in the Onera S3Ch WT: aeroelastic airofoil (foreground) and gust generator (background).
+										</p>
+										<p>
+											>> <a href="https://drive.google.com/file/d/0B984ELNCureRVzIzSGZJVzB0b0k/view?usp=sharing&resourcekey=0-X3YYhfNsFoPcQ4sRZwDCcQ" target="_blank">Video</a><br>
+											>> <a href="https://www.onera.fr/en/news/gust-effect-control-a-european-first-at-onera" target="_blank">Onera communication</a>
+										</p>
+									</div>
+									<img src="images/research/2015_wtt.jpg" width="60%" height="60%"><br>
 								</section>
 						</div>
 					</div>
@@ -185,7 +234,6 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
-			<script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js" defer></script>
-
+			
 	</body>
 </html>
