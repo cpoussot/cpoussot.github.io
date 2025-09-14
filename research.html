@@ -54,7 +54,16 @@
 									<div class="content">
 										<h3>Construction of a simplified model of a wave guide simulator (December 2024)</h3>
 										<p>
-											The Loewner framework, extended to port Hamiltoninan structures, is used to construct a simplified / reduced order dynamical model from data collected directly from a Maxwell's equation driven simulator. The reduced model recovers first the structure, second the input/output behavior and third, enable the full state (approximate) reconstruction.
+											The Loewner framework, extended to port Hamiltoninan structures, 
+											$$
+											\left\{
+											\begin{array}{rcl}
+											M\dot x(t)=(J-R)Qx(t)+(G-P)u(t) \\
+											y(t)=(G+P)^\top Qx(t)+(N+S)u(t),
+											\end{array}
+											\right.,	
+											$$
+											is used to construct a simplified / reduced order dynamical model from data collected directly from a Maxwell's equation driven simulator. The reduced model recovers first the structure, second the input/output behavior and third, enable the full state (approximate) reconstruction.
 										</p>
 										<p>
 											The figure shows a wave guide simulation composed of three permittivity regions in response to an electric wave injected from the left. The magnetic (H, top) and electric (E, bottom) fields obtained by the expert simulator (in 10 minutes) and the reduced model (obtained in 1 second) are shown.
@@ -79,6 +88,12 @@
 											<li>We show that this decomposition achieves variables decoupling; thus connecting the Loewner framework for rational interpolation of multivariate functions and the Kolmogorov Superposition Theorem (KST), restricted to rational functions. The result is the formulation of KST for the special case of rational functions;</li>
 											<li>Connections with KAN neural nets follows (detailed in future work).</li>
 											</ul>
+											$$
+											\begin{array}{ccl}
+												\mathbb C^{k_1} \times\mathbb C^{q_1} \times \ldots \times \mathbb C^{k_n}\times \mathbb C^{q_n} \times \mathbb C^{(k_1+q_1)\times \cdots \times (k_n+q_n)} & \longrightarrow & \mathbb C^{Q\times K} \\
+												\left(\lambda^{(1)},\mu^{(1)},\ldots,\lambda^{(n)},\mu^{(n)},\texttt{tab}_n\right) &  \longmapsto & \mathbb L_n 
+											\end{array}
+											$$
 										</p>
 										<p>
 											Figure compares flop: cascaded n-D Loewner worst-case upper bounds for varying number of variables n, while the full n-D Loewner is $\mathcal{O}(N^3)$ (black dashed); comparison with $\mathcal{O}(N^3)$ and $\mathcal{O}(N \log(N))$ references are shown in dash-dotted and dotted black lines.
@@ -98,13 +113,20 @@
 										<h3>Riemann zeta function zeros and prime counting function approximation (June 2022)</h3>
 										<p>
 											The realisation landmark of Mayo and Antoulas, through the lens of the modified Loewner framework is used to approximate the non-trivial zeros of the famous Riemann zeta function. These approximated zeros are then used to approximate the Riemann prime counting function, as illustrated in the right frame.
+											$$
+											\pi(\lfloor x \rfloor ) \approx \mathbf{Ri}(x) - \sum_{\rho_{r}} \mathbf{Ri}(x^{\rho_r})- \sum_{\rho_{i}} \mathbf{Ri}(x^{ \rho_i}) =\mathbf J(x)
+											$$
+											where $\rho_i$ are the non-trivial zeros or the $\zeta$ Riemann function
+											$$
+											\zeta(z) = \displaystyle \sum_{n=1}^\infty \frac{1}{n^z}.
+											$$
 										</p>
 										<p>
 											Figure compares of the prime counting function (thin red) with the Riemann formulae including non-trivial zeros approximated by the Loewner approach (solid blue). As the number of non-trivial (harmonics) zeros increases, the step shape is revealed.
 										</p>
 										<p>
 											C. Poussot-Vassal, I.V. Gosea, P. Vuillemin and A.C. Antoulas "Loewner framework for Riemann zeta function non-trivial zeros and prime counting function approximation", still in preparation.</br>
-											>> <a href="https://drive.google.com/file/d/1Xuspt2ufyAwPGay3rmelH7-cUVd0iH8R/view?usp=sharing" target="_blank">slides</a>
+											>> <a href="https://drive.google.com/file/d/1Xuspt2ufyAwPGay3rmelH7-cUVd0iH8R/view?usp=sharing" target="_blank">Slides</a>
 										</p>
 									</div>
 									<img src="images/research/2022_riemann.gif" width="60%" height="60%"><br>
@@ -120,7 +142,7 @@
 											Figure shows the horizontal cross section of pollutants concentration from four sources (red stars) with an eastward wind. Original data from complex simulator Large Eddy Simulation (LES, left), and nonlinear Reduced Order Model (ROM, right). The LES solution runs in 5,600 hours on a cluster while the ROM in seconds over a standard laptop.
 										</p>
 										<p>
-											C. Poussot-Vassal, T. Sabatier, C. Sarrat and P. Vuillemin, "Mixed interpolatory and inference non-intrusive reduced order modeling with application to pollutants dispersion".</br>
+											C. Poussot-Vassal, T. Sabatier, C. Sarrat and P. Vuillemin, "Mixed interpolatory and inference non-intrusive reduced order modeling with application to pollutants dispersion", to be submitted.</br>
 											>> <a href="https://arxiv.org/abs/2012.07126" target="_blank">arXiv</a>
 										</p>
 									</div>
@@ -139,7 +161,7 @@
 										<p>
 											C. Poussot-Vassal, P. Kergus, F. Kerhervé and D. Sipp "<a href="https://doi.org/10.1109/TCST.2021.3070056" target="_blank"> Interpolatory-based data-driven pulsed fluidic actuator control design and experimental validation</a>", in IEEE transaction on Control Systems Technology, Vol. 30(2), March 2022, pp. 852-859.</br>
 											>> <a href="https://arxiv.org/abs/2012.01061" target="_blank">arXiv</a><br>
-											>> <a href="https://drive.google.com/file/d/1FsVk2AMBNn8X1h7eGPF2zaJRlKKZLZ5L/view?usp=sharing" target="_blank">Video</a>
+											>> <a href="https://drive.google.com/file/d/1FsVk2AMBNn8X1h7eGPF2zaJRlKKZLZ5L/view?usp=sharing" target="_blank">Video (closed-loop tracking performances of the PFA)</a>
 										</p>
 									</div>
 									<img src="images/research/2020_pfa.jpg" width="60%" height="60%"><br>
@@ -157,9 +179,8 @@
 											Figure shows the Falcon 7X s/n 001 during ground vibration test. 
 										</p>
 										<p>
-											C. Poussot-Vassal, C. Roos, P. Vuillemin, O. Cantinaud and J-P. Lacoste, "<a href="http://dx.doi.org/10.1049/PBCE080E_ch11" target="_blank">Chapter 11: Control-oriented Aeroelastic BizJet Low-order LFT modeling</a>", Control-oriented modelling and identification: theory and practice, M. Lovera Eds. January, 2015, IET - Control Engineering Series 80 (Hardcover).</br>
 											C. Meyer, G. Broux, J. Prodigue, O. Cantinaud and C. Poussot-Vassal, "Demonstration of innovative vibration control on a Falcon Business Jet", in Proceedings of the International Forum on Aeroelasticity and Structural Dynamics (IFASD), Como, Italy, June, 2017.</br>
-											>> <a href="https://drive.google.com/file/d/1H2GqlYkiny_PZND2ekB6swSetoGcmFTK/view?usp=sharing" target="_blank">Video (test)</a><br>
+											>> <a href="https://drive.google.com/file/d/1H2GqlYkiny_PZND2ekB6swSetoGcmFTK/view?usp=sharing" target="_blank">Video (experimental ground test)</a><br>
 											>> <a href="https://drive.google.com/file/d/0B984ELNCureRVjd3d3Q3dmozLTQ/view?usp=sharing&resourcekey=0-8bRyhAmu2_-b7Pm7bfhTHQ" target="_blank">Video (interview)</a>
 										</p>
 									</div>
@@ -173,10 +194,10 @@
 											In the Onera wind tunnel facility, both trans- and sub-sonic configurations to attenuate gust load, have been obtained thanks to an advanced frequency-domain identification procedure based on data-driven model approximation performed with the MDSPACK library, followed by an active closed-loop control done in the structured H-infinity framework.
 										</p>
 										<p>
-											Figure shows the xperimental set-up in the Onera S3Ch WT: aeroelastic airofoil (foreground) and gust generator (background).
+											Figure shows the experimental set-up in the Onera S3Ch WT: aeroelastic airofoil (foreground) and gust generator (background).
 										</p>
 										<p>
-											>> <a href="https://drive.google.com/file/d/0B984ELNCureRVzIzSGZJVzB0b0k/view?usp=sharing&resourcekey=0-X3YYhfNsFoPcQ4sRZwDCcQ" target="_blank">Video</a><br>
+											>> <a href="https://drive.google.com/file/d/0B984ELNCureRVzIzSGZJVzB0b0k/view?usp=sharing&resourcekey=0-X3YYhfNsFoPcQ4sRZwDCcQ" target="_blank">Video (slow motion, control "on" at 19 seconds)</a> <br>
 											>> <a href="https://www.onera.fr/en/news/gust-effect-control-a-european-first-at-onera" target="_blank">Onera communication</a>
 										</p>
 									</div>
