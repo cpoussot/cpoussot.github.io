@@ -94,9 +94,13 @@
 												\left(\lambda^{(1)},\mu^{(1)},\ldots,\lambda^{(n)},\mu^{(n)},\texttt{tab}_n\right) &  \longmapsto & \mathbb L_n 
 											\end{array}
 											$$
+											where each entry of the $\mathbb L_n$ matrix reads
+											$$
+											\ell_{j_1,j_2,\cdots,j_{n}}^{i_1,i_2,\cdots,i_{n}} = \dfrac{v_{i_1,i_2,\cdots,i_n}-w_{j_1,j_2,\cdots,j_n}}{(\mu^{(1)}_{i_1}-\lambda^{(1)}_{j_1})\cdots (\mu^{(n)}_{i_n}-\lambda^{(n)}_{j_n})}.
+											$$
 										</p>
 										<p>
-											Figure compares flop: cascaded n-D Loewner worst-case upper bounds for varying number of variables n, while the full n-D Loewner is $\mathcal{O}(N^3)$ (black dashed); comparison with $\mathcal{O}(N^3)$ and $\mathcal{O}(N \log(N))$ references are shown in dash-dotted and dotted black lines.
+											Figure compares flop: cascaded $n$-D Loewner worst-case upper bounds for varying number of variables $n$, while the full $n$-D Loewner ($\mathbb L_n\in \mathbb C^{N \times N}$) is $\mathcal{O}(N^3)$ (black dashed); comparison with $\mathcal{O}(N^3)$ and $\mathcal{O}(N \log(N))$ references are shown in dash-dotted and dotted black lines.
 										</p>
 										<p>
 											A. C. Antoulas, I. V. Gosea and C. Poussot-Vassal, "On the Loewner framework, the Kolmogorov superposition theorem, and the curse of dimensionality", in SIAM Review (Research Spotlight)<br>
@@ -217,8 +221,8 @@
 								<ul>
 									<li><a href="index.html">Homepage</a></li>
 									<li><a href="research.html">Research highlights</a></li>
-									<li><a href="teaching.html">Teaching</a></li>
 									<li><a href="curriculum.html">Curriculum</a></li>
+									<li><a href="teaching.html">Teaching</a></li>
 									<li><a href="">Publications</a></li>
 										<ul>
 											<li><a href="journals.html">Journals</a></li>
