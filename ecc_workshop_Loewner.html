@@ -38,16 +38,29 @@
 									</ul>
 								</header>
 							<!-- Banner -->
+							
 							<section id="banner">
 								<div class="content">
+									<h2>European Control Conference 2026 Workshop (<a href="https://ecc26.euca-ecc.org/workshops/#workshop8" target="_blank">ECC link</a>)</h2>
+									<h3>The Loewner Framework: Data-Driven Model Reduction for Control of Complex Systems</h3>
+									<h4>From Theory to Hands-on Implementation</h2>
 									<p>
-										This workshop presents the Loewner Framework (LF), a data-driven approach for linear time-invariant multi-input multi-output model reduction, approximation, and identification. <br>
-										The LF connects rational interpolation in barycentric form to minimal state-space realization through the Loewner matrix, providing surrogate models directly from measured data using only basic linear algebra (e.g., SVD-like decompositions) without iterations or optimization. <br>
-										It bridges approximation theory and dynamical system theory, supporting both barycentric rational forms and state-space realizations with minimal order and complexity. The tutorial covers fundamentals and recent results, with emphasis on practical implementation through open-source MATLAB codes, detailed exercises, and academic and industrial examples. <br>
-										Optional extensions to parametric, bilinear, and quadratic models may be included.
+										<b>Simplified model construction</b> and <b>model order reduction</b> is essential for making complex systems tractable for control design, optimization, and (uncertain) simulation, yet many real-world systems remain too large or unwieldy for standard approaches. 
+										In this context, the <b>Loewner Framework (LF)</b> offers a data-driven, scalable solution <b>allowing constructing accurate surrogate models directly from measured data</b> using only basic linear algebra (e.g., SVD), without iterations or optimization. 
+										This makes it uniquely suited for very large, infinite and data-driven systems where traditional methods fail.<br>
+									</p>
+									<p>
+										Originally developed for linear time-invariant (LTI) systems, the LF has since been extended to nonlinear systems, bridging approximation theory and dynamical systems through rational interpolation and minimal realizations. 
+										Its versatility is demonstrated across academic and industrial applications, from aerospace to energy systems.
+									</p>
+									<p>
+										This workshop is destined to researchers, PhD candidates and engineers working with (i) high-order systems or (ii) frequency-domain input-output data, who need simplified models for control, optimization, analysis or simulation. It will equip participants with:<br>
+										>> A <b>theoretical foundation</b> in the Loewner Framework for both linear and nonlinear time invariant systems;<br>
+										>> <b>Hands-on implementation</b> skills using open-source MATLAB tools;<br>
+										>> <b>Practical experience</b> reducing complex systems from benchmarks, or their <b>own data</b>, during interactive sessions.
 									</p>
 								</div>
-								<img src="images/loewner.jpg" width="20%" height="20%"><br>
+								<img src="images/research/CharlesLoewner.jpg" width="20%" height="20%"><br>
 							</section>
 							
 							<section id="news">
@@ -55,7 +68,11 @@
 								<h3>Program attempt</h3>
 								<p>
 									<ul>
-										<li>a</li>
+										<li>Introduction: Overview of model order reduction techniques (30 minutes)</li>
+										<li>Lecture 1 (CPV):  Interpolation and approximation of rational functions using the Loewner Framework and application for identification of LTI systems (1h15)</li>
+										<li>Lecture 2 (PK): The Loewner framework for nonlinear and parametric systems (1h15)</li>
+										<li>Lab 1: Tutorial example and application to a complex systems (1h30 - 2h)</li>
+										<li>Lab 2: "Reduced order modelling for control of complex systems" or "Bring your own problem" (1h - 1H30)</li>
 									</ul>
 								</p>
 								<!-- Program -->
@@ -72,11 +89,15 @@
 									We propose to deal work on your problem. This offer consider one or multiple of the following cases:
 									<ul>
 										<li>Reduce any descriptor state-space model;<br>
-											>> Input: a ss or dss Matlab model 
+											>> Input: a <code>ss</code> or <code>dss</code> MATLAB model (being $n_u$ inputs, $n_y$ outputs).
 										</li>
-										<li>Approximate any (real or complex) transfer function;</li>
+										<li>Approximate any (real or complex) transfer function;<br>
+											>> Input: a <code>function_handle</code> MATLAB function (being $n_u$ inputs, $n_y$ outputs).
+										</li>
+										<li>Construct a model from data;<br>
+											>> Input: a <code>{w,G}</code> couple containing a $n_w \times 1$ frequency vector <code>w</code> and a $n_y \times n_u \times n_w$ complex frequency response structure <code>G</code> in MATLAB format.
+										</li>
 										<li>Approximate any (real or complex) multivariate transfer function;</li>
-										<li>Design a </li>
 									</ul>
 								</p>
 								<!-- References -->
