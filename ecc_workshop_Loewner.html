@@ -62,6 +62,18 @@
 										>> <b>Hands-on implementation</b> skills using open-source MATLAB tools;<br>
 										>> <b>Practical experience</b> reducing complex systems from benchmarks, or their <b>own data</b>, during interactive sessions.
 									</p>
+									<p>
+										The Loewner matrix is the main ingredient for rational approximation in the barycentric form:<br>
+										$$
+										\text{Data $\{x_l,y_l=g(x_l)\}_{l=1}^N$ are split into columns $\{\lambda_j,w_j\}$ and row data $\{\mu_i,v_i\}$ leading to}
+										$$
+										$$
+										\mathbb{L} = \left[ \begin{array}{cccc} \dfrac{v_1-w_1}{\mu_1-\lambda_1} & \dfrac{v_1-w_2}{\mu_1-\lambda_2} & \cdots &  \dfrac{v_1-w_k}{\mu_1-\lambda_k} \\
+																				\dfrac{v_2-w_1}{\mu_2-\lambda_1} & \dfrac{v_2-w_2}{\mu_1-\lambda_2} & \cdots &  \dfrac{v_2-w_k}{\mu_1-\lambda_k} \\ 
+																				& & \vdots & \\ 
+																				\dfrac{v_q-w_1}{\mu_q-\lambda_1} & \dfrac{v_q-w_2}{\mu_q-\lambda_2} & \cdots &  \dfrac{v_q-w_k}{\mu_q-\lambda_k} \end{array}\right] \in \mathbb{C}^{q\times k}
+										$$
+									</p>
 								</div>
 								<img src="images/research/CharlesLoewner.jpg" width="20%" height="20%"><br>
 							</section>
