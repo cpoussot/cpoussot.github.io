@@ -35,34 +35,36 @@
 								<!-- Banner -->
 								<section id="banner">
 									<div class="content">
-										<h2>mLF (multivariate Loewner Framework)</h2>
-										<!-- Overview -->
-										<h3>Overview</h3>
+										<h2>mLF in a nutshell</h2>
+										<!-- Forewords -->
+										<h3>Forewords</h3>
 										<p>
-											The <code>mLF</code> (for multivariate Loewner Framework) is a <code>MATLAB</code>  package implementing the Loewner framework for tensor-based multivariate rational modeling.
-											It is introduced  by A.C. Antoulas, I-V. Gosea and C. Poussot-Vassal in "<a href="https://doi.org/10.1137/24M1656657">On the Loewner framework, the Kolmogorov superposition theorem, and the curse of dimensionality</a>", in SIAM Review (Research Spotlight), Vol. 67(4), pp. 737-770, November 2025 [<a href="https://arxiv.org/abs/2405.00495">arXiv</a>]. <br>
-											It allows constructing a $n$-variable rational function approximating a $n$-dimensional tensor (either real or complex valued). 
-											It is suited to approximate, from any $n$-dimensional tensor <br>
-											<ul>
-												<li>$n$-variable static functions</li>
-												<li>$n$-variable (parametric) dynamical systems</li>
-											</ul>
+											The code provided in is given for open science purpose. 
+											Its principal objective is to accompany the SIAM Review paper / arXiv paper by the authors, thus aims at being educative rather than industry-oriented. 
+											Evolutions (numerical improvements) may come with time. 
+											Please, cite the reference if used in your work and do not hesitate to contact us in case of bug of problem when using it. 
 										</p>
-										<!-- contribution -->
-										<h3>Contributions highlights</h3>
 										<p>
-											<ul>
-												<li>We propose a generalized realization form for rational functions in $n$-variables (in the Lagrange basis);</li>
-												<li>We show that the $n$-dimensional Loewner matrix is the solution of a series of cascaded Sylvester equations;</li>
-												<li>We demonstrate that the barycentric coefficients can be computed using a sequence of small-scale 1-dimensional Loewner matrices instead of the large-scale ($N \times N$) $n$-dimensional one, therefore drastically reducing the both computational effort and memory needs, and improving accuracy;</li>
-												<li>We show that this decomposition achieves variables decoupling; thus connecting the Loewner framework for rational interpolation of multivariate functions and the Kolmogorov Superposition Theorem (KST), restricted to rational functions. The result is the formulation of KST for the special case of rational functions;</li>
-												<li>Connections with KAN neural nets follows (detailed in future work).</li>
-											</ul>
-											The <code>mLF</code> provides a hand-ready package to implement all these features.
+											Moreover, for more numerically robust and involved implementation and features, we invite reader and users to refer to the MDSPACK library by MOR Digital Systems.
 										</p>
-										<div style="text-align: center;">
-											<img src="images/mindmap.png" width="80%"></a>
-										</div>
+
+										<h3>Dependencies</h3>
+										<p>
+											MATLAB R2023b or later (tested on this version)<br>
+											Toolboxes: "Symbolic Math Toolbox" may be used for some functionalities
+										</p>
+										<!-- Loewner -->
+										<h3>Data, tensor and Loewner framework</h3>
+										<p>
+											<div style="text-align: center;">
+												<img src="images/tensor.png" width="20%"></a>
+											</div>
+										</p>
+										<!-- Multivariate -->
+										<h3>Model as a multivariate rational functions</h3>
+										<p>
+											
+										</p>
 									
 										<ul class="contact">
 											<li class="icon solid fa-envelope">
