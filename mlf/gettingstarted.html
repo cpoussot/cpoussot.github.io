@@ -43,14 +43,14 @@ Clone the <code>mLF</code> from the <a href="https://github.com/cpoussot/mLF">mL
 <pre class="default prettyprint prettyprinted" style=""><code>git clone git@github.com:cpoussot/mLF.git
 </code></pre>
 
-Ten add the path to your <code>MATLAB</code> environment.
+Then add the path to your <code>MATLAB</code> environment.
 <pre class="default prettyprint prettyprinted" style=""><code>addpath('PLACE_OF_MLF/mlf')
 </code></pre>
 
 You are now ready to start using <code>mLF</code>.
 
-<h3>Define model</h3>
-Start by defining your model (here we use the Polya-Szego polynomial), which is a $n=3$ variable function given by:
+<h3>Define a test model</h3>
+Start by defining your model <code>H</code> (here we use the Polya-Szego polynomial case), which is a $n=3$ variable polynomial function given by:
 $$
 H(x_1,x_2,x_3) = x_1x_2+x_1x_3+x_2x_3.
 $$
@@ -59,14 +59,16 @@ H       = @(x) x(:,1).*x(:,2)+x(:,1).*x(:,3)+x(:,2).*x(:,3);
 </code></pre>
 
 <h3>Define the interpolation points along each variables</h3>
-The interpolation points (or support points) along each variable are then defined (notice that different ranges and number of points can be chosen).
+The interpolation points <code>ip</code> (or support points) along each variable are then defined (notice that different ranges and number of points can be chosen).
 <pre class="default prettyprint prettyprinted" style=""><code>ip{1}   = linspace(-1,1,10);
 ip{2}   = linspace(-1,1,10);
 ip{3}   = linspace(-1,1,10);
 </code></pre>
 
 <h3>Split interpolation points into column and row data sets and build tensor</h3>
-To fit the Loewner framework, the interpolation points are split into column and row sets. Here we alternate the points (choice comonly admitted, but any other repartition can be chosen). Then, the tensorized data are constructed. 
+To fit the Loewner framework, the interpolation points are split into column <code>pc</code> and row <code>pr</code> sets. 
+Here we alternate the points (choice comonly admitted, but any other repartition can be chosen). 
+Then, the tensorized data <code>tab</code> are constructed. 
 <pre class="default prettyprint prettyprinted" style=""><code>for i = 1:n
     pc{i} = ip{i}(2:2:end); 
     pr{i} = ip{i}(1:2:end);
@@ -76,7 +78,10 @@ tab         = mlf.vec2mat(y,dim);
 </code></pre>
 
 <h3>Use the mLF (Alg. 1: direct [A/G/P-V, 2025])</h3>
-Now we are ready to build the approximation. In what follows, the <code>opt.tol</code> ($\varepsilon$), set to $10^{-8}$, is used as the threshold for the single variable  order detection (in non-rational cases).
+Now we are ready to build the approximation. 
+In what follows, the <code>opt.tol</code> set to $10^{-8}$, is used as the threshold for the single variable  order detection.
+Then the <code>opt.ord_show</code> is used to show the single variable normalized singular value drop (it may help to chose the order). 
+The algorithm computes <code>g</code>, a handle function; and <code>iloe</code>, gathering some informations about the process.
 <pre class="default prettyprint prettyprinted" style=""><code>opt.ord_tol     = 1e-8;
 opt.ord_show    = true;
 [g,iloe]        = mlf.alg1(tab,p_c,p_r,opt);	
@@ -85,6 +90,7 @@ opt.ord_show    = true;
 <div style="text-align: center;">
 	<img src="examples/getstarted/svd.png" width="60%"></a>
 </div>
+
 
 <h3>Evaluate the resulting approximate</h3>
 Compare the original and approximate functions with 1000 random draw. The result should be close to machine precision.
@@ -95,14 +101,14 @@ end
 mean(err)
 </code></pre>
 
-The below frame compares the original and approximate functions along $x_1$ and $x_2$ for a random $x_3$ value. The frames show the value (left) and the mismatch (right).
+The below frame compares the original <code>H</code> and approximate <code>g</code> functions along $x_1$ and $x_2$ for a random $x_3$ value. The frames show the value (left) and the mismatch (right).
 <div style="text-align: center;">
 	<img src="examples/getstarted/eval.png" width="60%"></a>
 </div>
 
 
 <h3>Got to the KST form</h3>
-To go furhter, it is also possible to derive the single variable vector functions $\Phi_1(x_1)$, $\Phi_2(x_2)$ and $\Phi_3(x_3)$, linking the Loewner frameork to the KST, leading the following equivalent formulation of the approximant:
+To go furhter, it is also possible to derive the single variable vector functions $\Phi_1(x_1)$, $\Phi_2(x_2)$ and $\Phi_3(x_3)$, linking the Loewner framework to the KST, leading the following equivalent formulation of the approximant:
 $$
 g(x_1,x_2,x_3) = \dfrac{\sum_{\text{rows}}w\cdot \Phi_1(x_1)\cdot \Phi_2(x_2)\cdot \Phi_3(x_3)}{\sum_{\text{rows}}\Phi_1(x_1)\cdot \Phi_2(x_2)\cdot \Phi_3(x_3)}
 $$
@@ -114,14 +120,15 @@ num             = simplify(sum(iloe.w.*PHI1.*PHI2.*PHI3));
 den             = simplify(sum(PHI1.*PHI2.*PHI3));
 simplify(num/den)	
 </code></pre>
-									
-										<ul class="contact">
-											<li class="icon solid fa-envelope">
-												<a href="mailto:charles.poussot-vassal@onera.fr">charles.poussot-vassal [at] onera.fr </a> 
-											</li>
-										</ul>
+
+More examples are detailed in the <a href="examples.html">examples</a> page.
 									</div>
 								</section>
+								<ul class="contact">
+									<li class="icon solid fa-envelope">
+										<a href="mailto:charles.poussot-vassal@onera.fr">charles.poussot-vassal [at] onera.fr </a> 
+									</li>
+								</ul>
 						</div>
 					</div>
 
