@@ -37,7 +37,7 @@
 									<div class="content">
 										<h2>mLF (multivariate Loewner Framework)</h2>
 										<!-- Forewords -->
-										<h3>Forwords</h3>
+										<h3>Forewords</h3>
 										<p>
 											The <code>mLF</code> package implements - in <code>MATLAB</code> language - the Loewner framework for tensor-based multivariate rational modeling.
 											It provides an open source and turnkey package to implement the features introduced in the original article by A.C. Antoulas, I-V. Gosea and C. Poussot-Vassal, "<a href="https://doi.org/10.1137/24M1656657" target="_blank">On the Loewner framework, the Kolmogorov superposition theorem, and the curse of dimensionality</a>", in SIAM Review (Research Spotlight), Vol. 67(4), pp. 737-770, November 2025 [<a href="https://arxiv.org/abs/2405.00495" target="_blank">arXiv</a>]. 
@@ -47,8 +47,7 @@
 											Its principal objective is to accompany the contributions by the authors (listed in the <a href="references.html">references page</a>). 
 											It aims at being educative rather than industry-oriented. 
 											Evolutions (e.g. numerical improvements) may come with time, please check the <a href="https://github.com/cpoussot/mLF" target="_blank">GitHub page</a>. 
-											Please, cite the <a href="references.html">references</a> if used in your work and do not hesitate to <a href="mailto:charles.poussot-vassal@onera.fr">contact us</a> in case of bug or problem when using it, or even in case of success. 
-											Your case may also be included in the <a href="examples.html">examples</a> page. 
+											Please, cite the <a href="references.html">references</a> if used in your work and do not hesitate to <a href="mailto:charles.poussot-vassal@onera.fr">contact us</a> in case of bug or problem when using it, or even in case of success (we would be happy to include your case in the <a href="examples.html">examples</a> page). 
 										</p>										
 										<p>
 											For numerically more robust, scalable and versatile implementation, we invite readers and users to refer to the <a href="https://mordigitalsystems.fr/static/mdspack_html/MDSpack-guide.html" target="_blank">MDSPACK</a> proposed library by <a href="https://mordigitalsystems.fr/" target="_blank">MOR Digital Systems</a>.
@@ -65,7 +64,7 @@
 										<div style="text-align: center;">
 											<img src="examples/images/approx.png" width="80%"></a><br>
 											Illustration of a 2-variables tensorized data-based model construction. <br>
-											Raw data (left) and its rational approximation obtained with <code>mLF</code> (right).<br>
+											Raw data generated from an irrational 2-variables model (left) and its rational approximation obtained with <code>mLF</code> (right).<br>
 										</div>
 
 										<h4>Download page</h4>
@@ -80,14 +79,14 @@
 										<h4>Dependencies</h4>
 										<p>
 											<ul>
-												<li>MATLAB R2023b or later (tested on this version).</li>
-												<li>Toolboxes: "Symbolic Math Toolbox" may be used for some functionalities (but not mandatory for most cases).</li>
+												<li><code>MATLAB R2023b</code> or later (tested on this version).</li>
+												<li>Toolboxes: <code>Symbolic Math Toolbox</code> may be used for some functionalities (but not mandatory for most cases).</li>
 											</ul>
 										</p>
 										<!-- Quick view -->
 										<h4>From tensor data to multivariate model</h4>
-										The main ingredient of the <code>mLF</code> is a data tensor. 
-										More specifically, it consists in the evaluation of the unknown function $f$, along the different values combinations of $(x_1,\cdots,x_n)$, thus leading to a $n$-dimensional tensor $\mathcal T^{\otimes}_n$.
+										The main ingredient of the <code>mLF</code> is a tensor data. 
+										More specifically, this tensor is obtained by evaluating of the unknown function/process/sofware, denoted $f$, along the different values combinations of $(x_1,\cdots,x_n)$, thus leading to a $n$-dimensional tensor $\mathcal T^{\otimes}_n$.
 										$$
 										\left.
 										\begin{array}{rcl}
@@ -104,16 +103,16 @@
 												Illustation of a tensor data $\mathcal T^{\otimes}_n$.
 											</div>
 										</p>
-										Based on this tensor set, we seek for a multivariate rational model of the form below:
+										Based on this $n$-dimensional tensor, we seek for a $n$-variate rational model of the form below:
 										<p>
 											$$
 											g(x_{1},\cdots,x_{n}) =
 											\dfrac{\sum_{j_1=1}^{k_1}\cdots\sum_{j_n=1}^{k_n} \dfrac{c(j_1,\cdots,j_n)w(j_1,\cdots,j_n)}{(x_{1}-\lambda_{1}(j_1))\cdots(x_{n}-\lambda_{n}(j_n))}}{\sum_{j_1=1}^{k_1}\cdots\sum_{j_n=1}^{k_n} \dfrac{c(j_1,\cdots,j_n)}{(x_{1}-\lambda_{1}(j_1))\cdots(x_{n}-\lambda_{n}(j_n))}}
 											$$
-											that approximates or discover the true unknown function $f$. See the <a href="gettingstarted.html">Getting started page</a> to discover how, and visit the <a href="examples.html">Examples page</a> to view the other functionalities.
+											that approximates or discover the true unknown function $f$. See the <a href="gettingstarted.html">Getting started</a> page to discover how, and visit the <a href="examples.html">examples</a> and <a href="references.html">refeernces</a> pages to view some other functionalities.
 										</p>
 										<!-- contribution -->
-										<h3>Contributions and main functionalities highlights</h3>
+										<h4>Contributions and main functionalities highlights</h4>
 										<p>
 											<ul>
 												<li><code>mLF</code> achieves multivariate rational model construction directly from tensorized data;</li>

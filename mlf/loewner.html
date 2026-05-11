@@ -39,11 +39,8 @@
 										<!-- Loewner language -->
 										<h3>The Loewner language and notations</h3>
 										<p>
-											As many tools, the Loewner framework comes with its own "language". Here we list some notations:
+											<h4>The Loewner language in the single variable case</h4>
 											<ul>
-												<li>Number of variables: $n\in\mathbb N$</li>
-												<li>Interpolation points (or support points): $\lambda_j\in\mathbb C^{n_j}$ ($j=1,\cdots,n)$</li>
-												<li>Interpolation points (or support points): $\lambda_j\in\mathbb C^{n_j}$ ($j=1,\cdots,n)$</li>
 												<li>Data: interpolation and associated values, separated into columns and row sets, i.e. 
 													$$
 													\left\{
@@ -53,7 +50,7 @@
 													\end{array}
 													\right.
 													$$
-													where for simplicity let (typically $k\leq N$)
+													where for simplicity let (typically $k\leq M/2$)
 													$$
 													\begin{array}{rclrcll}
 													\lambda_j &=& x_j, & w_j&=& y_j & j=1,\dots,k\\
@@ -62,20 +59,59 @@
 													$$ 
 												</li>
 												<li>Loewner matrix $\mathbb{L}$: matrix constructed on the basis of the data</li>
-												<li>$n$: number of variables of the function or tensor, i.e. 
+												<li>Barycentric weights $c$: null space of the Loewner matrix, $\mathbb{L}c=0$</li>
+												<li>Barycentric (or Lagrangian) formula: 
 													$$
-													y=f(x_1,\dots,x_n)
+													g(x)=\dfrac{\sum_{j=1}^{k} \dfrac{c(j)w(j)}{x-\lambda(j)}}{\sum_{j=1}^{k} \dfrac{c(j)}{x-\lambda(j)}}
 													$$
 												</li>
-
-
 											</ul>
+											<h4>The Loewner language in the multi-variable case</h4>
+											<ul>
+												<li>Number of variables: $n\in\mathbb N$</li>
+												<li>Columns interpolation points (or support points): $\lambda_{j_l}\in\mathbb C^{n_l}$ ($l=1,\cdots,n$ and $j_l=1,\cdots,k_l$)</li>
+												<li>Row interpolation points: $\mu_{i_l}\in\mathbb C^{n_l}$ ($l=1,\cdots,n$ and $i_l=1,\cdots,q_l$)</li>
+												<li>Evaluation of the unknown function $f$ leading to the tensor $\mathcal T_n^\otimes$, i.e. 
+													$$
+													\left.
+													\begin{array}{rcl}
+													{\mathbf x_{1}} &=& \left[\begin{array}{cccc}x_{1}(1)&x_{1}(2)&\cdots&x_{1}(N_1)\end{array}\right]\\
+													{\mathbf x_{2}} &=& \left[\begin{array}{cccc}x_{2}(1)&x_{2}(2)&\cdots&x_{2}(N_2)\end{array}\right]\\
+													&\vdots& \\
+													{\mathbf x_{n}} &=& \left[\begin{array}{cccc}x_{n}(1)&x_{n}(2)&\cdots&x_{n}(N_n)\end{array}\right]\\
+													\end{array}
+													\right\} \Rightarrow \mathcal T^{\otimes}_n
+													$$
+												</li>
+												<li>$n$-D Loewner matrix $\mathbb{L}_n$: matrix constructed on the basis of the tensorized data, with dimension $Q=q_1 \cdots q_n$ and $K=k_1 \cdots k_n$,
+													$$
+													\mathbb{L}_n \in \mathbb C^{Q\times K}
+													$$
+													or graphically,
+												</li>
+											</ul>
+											<!-- Tensor -->
+											$$
+											\begin{array}{ccl}
+												\mathbb{C}^{k_1} \times\mathbb{C}^{q_1} \times \ldots \times \mathbb{C}^{k_n}\times \mathbb{C}^{q_n} \times \mathbb{C}^{(k_1+q_1)\times \cdots \times (k_n+q_n)} & \longrightarrow & \mathbb{C}^{Q\times K} \\
+												\left(\lambda_{1}(j_1),\mu_{1}(i_1),\ldots,\lambda_{n}(j_n),\mu_{n}(i_n),\mathcal{T}^{\otimes}_n\right) &  \longmapsto & \mathbb{C}_n 
+											\end{array}
+											$$
+											<div style="text-align: center;">
+												<img src="images/tensor2LL.png" width="60%"></a>
+											</div>
 										</p>
-										<p>
-											In what follows, we detail the 1-D ($n=1$), 2-D ($n=2$) and generic $n$-D case.
-										</p>
+									</div>
+								</section>
+
+								
+								<section id="banner">
+									<div class="content">
 										<!-- 1D case -->
-										<h3>The 1-D case</h3>
+										<p>
+											In what follows, we detail the 1-D ($n=1$), 2-D ($n=2$) cases.
+										</p>
+										<h3>Focus on the 1-D case ($n=1$)</h3>
 										<p>
 											Let us first define the column and row data as:
 											$$
@@ -115,7 +151,7 @@
 											which interpolates the data and recovers the underlying 1-D function or 1-D data (under mild conditions).
 										</p>
 										<!-- 2D case -->
-										<h3>The 2-D case</h3>
+										<h3>Focus on the 2-D case ($n=2$)</h3>
 										<p>
 											Let us first define the column and row data as:
 											$$
@@ -153,22 +189,6 @@
 											\dfrac{\sum_{j_1=1}^{k_1}\sum_{j_2=1}^{k_2} \dfrac{c(j_1,j_2)w(j_1,j_2)}{(x_{1}-\lambda_{1}(j_1))(x_{2}-\lambda_{2}(j_2))}}{\sum_{j_1=1}^{k_1}\sum_{j_2=1}^{k_2} \dfrac{c(j_1,j_2)}{(x_{1}-\lambda_{1}(j_1))(x_{2}-\lambda_{2}(j_2))}}
 											$$
 										</p>
-										
-										<!-- nD case -->
-										<h3>The $n$-D case</h3>
-
-										<!-- Tensor -->
-										<h3>From $n$-D tensor to Loewner matrix</h3>
-										$$
-										\begin{array}{ccl}
-											\mathbb{C}^{k_1} \times\mathbb{C}^{q_1} \times \ldots \times \mathbb{C}^{k_n}\times \mathbb{C}^{q_n} \times \mathbb{C}^{(k_1+q_1)\times \cdots \times (k_n+q_n)} & \longrightarrow & \mathbb{C}^{Q\times K} \\
-											\left(\lambda_{1}(j_1),\mu_{1}(i_1),\ldots,\lambda_{n}(j_n),\mu_{n}(i_n),\mathcal{T}^{\otimes}_n\right) &  \longmapsto & \mathbb{C}_n 
-										\end{array}
-										$$
-										<div style="text-align: center;">
-											<img src="images/tensor2LL.png" width="60%"></a>
-										</div>
-									
 									</div>
 								</section>
 								<ul class="contact">

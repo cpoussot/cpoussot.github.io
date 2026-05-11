@@ -39,7 +39,7 @@
 <!-- <pre class="default prettyprint prettyprinted" style=""><code><object data="examples/getstarted/getstarted.m" width=100% height=100%></object></code></pre> -->
 <!-- mLF download -->
 <h3>Download and load the mLF package</h3>
-Clone the <code>mLF</code> from the <a href="https://github.com/cpoussot/mLF">mLF GitHub page</a> or from a terminal with:
+Clone the <code>mLF</code> from the <a href="https://github.com/cpoussot/mLF">mLF GitHub</a> page or from a terminal with:
 <pre class="default prettyprint prettyprinted" style=""><code>git clone git@github.com:cpoussot/mLF.git
 </code></pre>
 
@@ -68,7 +68,10 @@ ip{3}   = linspace(-1,1,10);
 <h3>Split interpolation points into column and row data sets and build tensor</h3>
 To fit the Loewner framework, the interpolation points are split into column <code>pc</code> and row <code>pr</code> sets. 
 Here we alternate the points (choice comonly admitted, but any other repartition can be chosen). 
-Then, the tensorized data <code>tab</code> are constructed. 
+Then, the tensorized data <code>tab</code> are constructed. Here leading to a 3-D tensor, and more specifically
+$$
+\mathcal T_3^{\otimes} \in \mathbb R^{10\times 10\times 10}
+$$
 <pre class="default prettyprint prettyprinted" style=""><code>for i = 1:n
     pc{i} = ip{i}(2:2:end); 
     pr{i} = ip{i}(1:2:end);
@@ -79,21 +82,27 @@ tab         = mlf.vec2mat(y,dim);
 
 <h3>Use the mLF (Alg. 1: direct [A/G/P-V, 2025])</h3>
 Now we are ready to build the approximation. 
-In what follows, the <code>opt.tol</code> set to $10^{-8}$, is used as the threshold for the single variable  order detection.
-Then the <code>opt.ord_show</code> is used to show the single variable normalized singular value drop (it may help to chose the order). 
-The algorithm computes <code>g</code>, a handle function; and <code>iloe</code>, gathering some informations about the process.
+In what follows, the <code>opt.ord_tol</code> set to $10^{-8}$, is used as the threshold for the single variable  order detection.
+Then the <code>opt.ord_show</code> is used to show the single variable normalized singular value drop (it may help to choose the different orders). 
+The algorithm computes <code>g</code>, a handle function; and <code>iloe</code>, gathering some informations about the process and notably the interpolation points $(\lambda_1,\lambda_2,\lambda_3)$, the evaluation values $w$ and the barycentric weights $c$. 
+More specifically, the rational approximation takes the following form:
+$$
+g(x_{1},x_{2}x_3) =
+\dfrac{\sum_{j_1=1}^{k_1}\sum_{j_2=1}^{k_2}\sum_{j_3=1}^{k_3} \dfrac{c(j_1,j_2,j_3)w(j_1,j_2,j_3)}{(x_{1}-\lambda_{1}(j_1))(x_{2}-\lambda_{2}(j_2))(x_{3}-\lambda_{3}(j_3))}}{\sum_{j_1=1}^{k_1}\sum_{j_2=1}^{k_2}\sum_{j_3=1}^{k_3} \dfrac{c(j_1,j_2,j_3)}{(x_{1}-\lambda_{1}(j_1))(x_{2}-\lambda_{2}(j_2))(x_{3}-\lambda_{3}(j_3))}}
+$$
 <pre class="default prettyprint prettyprinted" style=""><code>opt.ord_tol     = 1e-8;
 opt.ord_show    = true;
 [g,iloe]        = mlf.alg1(tab,p_c,p_r,opt);	
 </code></pre>
 
 <div style="text-align: center;">
-	<img src="examples/getstarted/svd.png" width="60%"></a>
+	<img src="examples/getstarted/svd.png" width="60%"></a><br>
+	Normalized singular values of some of the single variable Loewner matrices.
 </div>
 
 
 <h3>Evaluate the resulting approximate</h3>
-Compare the original and approximate functions with 1000 random draw. The result should be close to machine precision.
+Now we compare the original and approximate functions with 1000 random draw. The result should be close to machine precision.
 <pre class="default prettyprint prettyprinted" style=""><code>for i = 1:1e3
     x_try   = rand(1,3);
     err(i)  = abs(H(x_try)-g(x_try));
