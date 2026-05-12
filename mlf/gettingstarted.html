@@ -73,8 +73,8 @@ $$
 \mathcal T_3^{\otimes} \in \mathbb R^{10\times 10\times 10}
 $$
 <pre class="default prettyprint prettyprinted" style=""><code>for i = 1:n
-    pc{i} = ip{i}(2:2:end); 
-    pr{i} = ip{i}(1:2:end);
+    p_c{i} = ip{i}(2:2:end); 
+    p_r{i} = ip{i}(1:2:end);
 end
 [y,x,dim]   = mlf.make_tab_vec(H,p_c,p_r);
 tab         = mlf.vec2mat(y,dim);
