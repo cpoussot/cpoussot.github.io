@@ -66,7 +66,7 @@ ip{3}   = linspace(-1,1,10);
 </code></pre>
 
 <h3>Split interpolation points into column and row data sets and build tensor</h3>
-To fit the Loewner framework, the interpolation points are split into column <code>pc</code> and row <code>pr</code> sets. 
+To fit the Loewner framework, the interpolation points are split into column <code>p_c</code> and row <code>p_r</code> sets. 
 Here we alternate the points (choice comonly admitted, but any other repartition can be chosen). 
 Then, the tensorized data <code>tab</code> are constructed. Here leading to a 3-D tensor, and more specifically
 $$
@@ -92,7 +92,7 @@ g(x_{1},x_{2}x_3) =
 $$
 <pre class="default prettyprint prettyprinted" style=""><code>opt.ord_tol     = 1e-8;
 opt.ord_show    = true;
-[g,iloe]        = mlf.alg1(tab,p_c,p_r,opt);	
+[g,iloe]        = mlf.alg1(tab,p_c,p_r,opt);
 </code></pre>
 
 <div style="text-align: center;">
@@ -127,7 +127,7 @@ PHI2            = Bary{2}.*Lag{2};
 PHI3            = Bary{3}.*Lag{3};
 num             = simplify(sum(iloe.w.*PHI1.*PHI2.*PHI3));
 den             = simplify(sum(PHI1.*PHI2.*PHI3));
-simplify(num/den)	
+simplify(num/den)
 </code></pre>
 Observe that in this case, the polynomial function is exactly recovered!
 <p>
