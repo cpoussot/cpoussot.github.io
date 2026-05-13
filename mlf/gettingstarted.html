@@ -87,7 +87,7 @@ Then the <code>opt.ord_show</code> is used to show the single variable normalize
 The algorithm computes <code>g</code>, a handle function; and <code>iloe</code>, gathering some informations about the process and notably the interpolation points $(\lambda_1,\lambda_2,\lambda_3)$, the evaluation values $w$ and the barycentric weights $c$. 
 More specifically, the rational approximation takes the following form:
 $$
-g(x_{1},x_{2}x_3) =
+g(x_{1},x_{2},x_3) =
 \dfrac{\sum_{j_1=1}^{k_1}\sum_{j_2=1}^{k_2}\sum_{j_3=1}^{k_3} \dfrac{c(j_1,j_2,j_3)w(j_1,j_2,j_3)}{(x_{1}-\lambda_{1}(j_1))(x_{2}-\lambda_{2}(j_2))(x_{3}-\lambda_{3}(j_3))}}{\sum_{j_1=1}^{k_1}\sum_{j_2=1}^{k_2}\sum_{j_3=1}^{k_3} \dfrac{c(j_1,j_2,j_3)}{(x_{1}-\lambda_{1}(j_1))(x_{2}-\lambda_{2}(j_2))(x_{3}-\lambda_{3}(j_3))}}
 $$
 <pre class="default prettyprint prettyprinted" style=""><code>opt.ord_tol     = 1e-8;
@@ -112,7 +112,7 @@ mean(err)
 
 The below frame compares the original <code>H</code> and approximate <code>g</code> functions along $x_1$ and $x_2$ for a random $x_3$ value. The frames show the value (left) and the mismatch (right).
 <div style="text-align: center;">
-	<img src="examples/getstarted/eval.png" width="60%"></a>
+	<img src="examples/getstarted/eval.png" width="80%"></a>
 </div>
 
 

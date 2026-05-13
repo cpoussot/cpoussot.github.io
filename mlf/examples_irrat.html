@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>mLF - multivariate Loewner Framework</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-svg.js"></script>
+		<script>MathJax = {
+			  tex: {
+				inlineMath: {'[+]': [['$', '$']]}
+			  },
+			  svg: {
+				fontCache: 'global'
+			  }
+			};
+		</script>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<!-- Header -->
+								<header id="header">
+									<a href="index.html" class="logo"><strong>multivariate Loewner Framework</strong></a>
+									<ul class="icons">
+										<li><a href="https://github.com/cpoussot/mLF" target="_blank"><span class="label">GitHub</span></a></li>										
+									</ul>
+								</header>
+								<!-- Banner -->
+								<section id="banner">
+									<div class="content">
+										<h2>Irrational example</h2>
+<!-- mLF download -->
+<h3>Define a test model and interpolation points</h3>
+Start by defining your model <code>H</code> 
+$$
+H(x_1,x_2) =  \frac{1}{2}(x_1+|x_1|)+\frac{1}{10}x_2.
+$$
+This is done here by using the <code>mlf.examples</code> routine that embeds multiple examples.
+We also define the interpolation points along each variable. 
+To fit the Loewner framework, the interpolation points are split into column <code>p_c</code> and row <code>p_r</code> sets. 
+Notice here that the above model is rational along $x_1$ and $x_2$.
+Notice here that the above model is irrational and discontinuous one along $x_1$ and polynomial along $x_2$.
+<pre class="default prettyprint prettyprinted" style=""><code>CAS         = 1;
+[H,infoCas] = mlf.examples(CAS);
+n           = infoCas.n;
+p_c         = infoCas.p_c;
+p_r         = infoCas.p_r;
+</code></pre>
+
+<h3>Build tensor</h3>
+Then, the tensorized data <code>tab</code> are constructed. Here leading to a 2-D tensor, and more specifically
+$$
+\mathcal T_2^{\otimes} \in \mathbb R^{40\times 40}
+$$
+<pre class="default prettyprint prettyprinted" style=""><code>[y,x,dim]   = mlf.make_tab_vec(H,p_c,p_r);
+tab         = mlf.vec2mat(y,dim);
+</code></pre>
+
+<h3>Use the mLF (Alg. 1: direct [A/G/P-V, 2025])</h3>
+Now we are ready to build the approximation. 
+In what follows, the <code>opt.ord_tol</code> set to $10^{-9}$, is used as the threshold for the single variable  order detection.
+Then the <code>opt.ord_show</code> is used to show the single variable normalized singular value drop (it may help to choose the different orders). 
+The <code>opt.method_null</code> option is used to chose the null space computation method (here SVD with hiest magnitude normalization).
+The <code>opt.method</code> is used to select either the recursive (<code>'rec'</code>) or full (<code>'full'</code>) method.
+The algorithm computes <code>g</code>, a handle function; and <code>iloe</code>, gathering some informations about the process and notably the interpolation points $(\lambda_1,\lambda_2)$, the evaluation values $w$ and the barycentric weights $c$. 
+More specifically, the rational approximation takes the following form:
+$$
+g(x_{1},x_{2}) =
+\dfrac{\sum_{j_1=1}^{k_1}\sum_{j_2=1}^{k_2}\dfrac{c(j_1,j_2)w(j_1,j_2)}{(x_{1}-\lambda_{1}(j_1))(x_{2}-\lambda_{2}(j_2))}}{\sum_{j_1=1}^{k_1}\sum_{j_2=1}^{k_2} \dfrac{c(j_1,j_2)}{(x_{1}-\lambda_{1}(j_1))(x_{2}-\lambda_{2}(j_2))}}
+$$
+<pre class="default prettyprint prettyprinted" style=""><code>opt.ord_tol     = 1e-9;   % SVD tolerance
+opt.ord_show    = true;   % show order detection
+opt.method_null = 'svd0'; % null space method
+opt.method      = 'rec';  % full or recursive method
+[g,iloe]        = mlf.alg1(tab,p_c,p_r,opt);	
+</code></pre>
+Notice that the singular values decay along the first variable $x_1$ is slow while it is sharp for the second $x_2$. 
+This indicates that the second variable $x_2$ is rational or polynomial and of degree $d_2=1$. 
+However, regarding the first one $x_1$, such a decay does not gives a clear indication on the approximation order, and degree $d_2=15$ is selected according to the singular value threshold. 
+Playing with <code>opt.ord_tol</code> allows to adjust this (see also <code>opt.ord_obj</code>).
+
+<div style="text-align: center;">
+	<img src="examples/approx_irrat/svd.png" width="60%"></a><br>
+	Normalized singular values of some of the single variable Loewner matrices.<br>
+</div>
+
+<h3>Evaluate the resulting approximate</h3>
+Now we compare the original and approximate functions with 1000 random draw. 
+The result should be small. Machine precision is not alway achieved due to the irrational contribution.
+<pre class="default prettyprint prettyprinted" style=""><code>for i = 1:1e3
+    x_try   = rand(1,2);
+    err(i)  = abs(H(x_try)-g(x_try));
+end
+mean(err)
+</code></pre>
+
+The below figure compares the original <code>H</code> and approximate <code>g</code> functions along $x_1$ and $x_2$ . 
+The frames show the value (left) and the mismatch (right).
+<div style="text-align: center;">
+	<img src="examples/approx_irrat/eval.png" width="80%"></a><br>
+</div>
+
+
+<h3>Got to the KST form</h3>
+To go furhter, it is also possible to derive the single variable vector functions $\Phi_1(x_1)$ and $\Phi_2(x_2)$, linking the Loewner framework to the KST, leading the following equivalent formulation of the approximant:
+$$
+g(x_1,x_2) = \dfrac{\sum_{\text{rows}}w\cdot \Phi_1(x_1)\cdot \Phi_2(x_2)}{\sum_{\text{rows}}\Phi_1(x_1)\cdot \Phi_2(x_2)}
+$$
+<pre class="default prettyprint prettyprinted" style=""><code>[Bary,Lag,Cx]   = mlf.decoupling(iloe);
+PHI1            = Bary{1}.*Lag{1};
+PHI2            = Bary{2}.*Lag{2};
+num             = simplify(sum(iloe.w.*PHI1.*PHI2));
+den             = simplify(sum(PHI1.*PHI2));
+vpa(simplify(num/den),3)
+vpa(PHI1,3)
+vpa(PHI2,3)
+</code></pre>
+Observe that in this case, the function is now approximated by a rational function!
+More specifically, the following KST like vector functions are obtained:
+$$
+\Phi_1(x_1) = \left(\begin{array}{c} -\frac{222.0}{x_{1}+1.0}\\ -\frac{222.0}{x_{1}+1.0}\\ \frac{825.0}{x_{1}+0.895}\\ \frac{825.0}{x_{1}+0.895}\\ -\frac{1150.0}{x_{1}+0.789}\\ -\frac{1150.0}{x_{1}+0.789}\\ \frac{656.0}{x_{1}+0.684}\\ \frac{656.0}{x_{1}+0.684}\\ -\frac{184.0}{x_{1}+0.474}\\ -\frac{184.0}{x_{1}+0.474}\\ \frac{88.7}{x_{1}+0.368}\\ \frac{88.7}{x_{1}+0.368}\\ -\frac{17.0}{x_{1}+0.263}\\ -\frac{17.0}{x_{1}+0.263}\\ \frac{1.19}{x_{1}+0.158}\\ \frac{1.19}{x_{1}+0.158}\\ -\frac{0.0365}{x_{1}-0.0526}\\ -\frac{0.0365}{x_{1}-0.0526}\\ \frac{0.376}{x_{1}-0.158}\\ \frac{0.376}{x_{1}-0.158}\\ -\frac{1.84}{x_{1}-0.263}\\ -\frac{1.84}{x_{1}-0.263}\\ \frac{3.65}{x_{1}-0.368}\\ \frac{3.65}{x_{1}-0.368}\\ -\frac{11.3}{x_{1}-0.579}\\ -\frac{11.3}{x_{1}-0.579}\\ \frac{17.1}{x_{1}-0.684}\\ \frac{17.1}{x_{1}-0.684}\\ -\frac{9.0}{x_{1}-0.789}\\ -\frac{9.0}{x_{1}-0.789}\\ \frac{1}{x_{1}-1.0}\\ \frac{1}{x_{1}-1.0} \end{array}\right)
+\text{ and }
+\Phi_2(x_2) = \left(\begin{array}{c} -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10} \end{array}\right)
+$$
+									</div>
+								</section>
+								<ul class="contact">
+									<li class="icon solid fa-envelope">
+										<a href="mailto:charles.poussot-vassal@onera.fr">charles.poussot-vassal [at] onera.fr </a> 
+									</li>
+								</ul>
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+				<!-- <div w3-include-html="content.html"></div> -->
+				<div id="sidebar">
+					<div class="inner">
+						<!-- Menu -->
+						<nav id="menu">
+							<header class="major">
+								<h2>Menu</h2>
+							</header>
+							<ul>
+								<li><a href="./index.html">mLF in a nushell</a></li>
+								<li><a href="./gettingstarted.html">Getting started</a></li>
+								<li><a href="./API.html">API</a></li>
+								<li><a href="./examples.html">Examples</a></li>
+								<li><a href="./community.html">Loewner community</a></li>
+								<ul>
+									<li><a href="./loewner.html">Get familiar with Loewner</a></li>
+									<li><a href="./references.html">References</a></li>
+								</ul>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+
+			<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/include.js"></script>
+		</body>
+</html>
