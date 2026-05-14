@@ -33,9 +33,9 @@ for ii = 1:length(p_c{1})
 end
 p_c{1}  = [pc{1}];
 p_r{1}  = [pr{1}];
+ip{1}   = [p_c{1} p_r{1}];
 %%% Tensor
 tab = mlf.make_tab(Hf,p_c,p_r,true);
-
 %%% Lagrangian multivariate
 opt.ord_tol     = 1e-12;
 opt.method_null = 'svd0';
