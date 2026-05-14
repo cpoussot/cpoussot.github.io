@@ -35,19 +35,19 @@
 								<!-- Banner -->
 								<section id="banner">
 									<div class="content">
-										<h2>Rational example</h2>
+										<h2>Irrational example</h2>
 <!-- mLF download -->
 <h3>Define a test model and interpolation points</h3>
 Start by defining your model <code>H</code> 
 $$
-H(x_1,x_2) = \frac{x_{1}^2+2x_{2}^2}{x_{1}^2+x_{2}^2}.
+H(x_1,x_2) =  \frac{1}{2}(x_1+|x_1|)+\frac{1}{10}x_2.
 $$
 This is done here by using the <code>mlf.examples</code> routine that embeds multiple examples.
 We also define the interpolation points along each variable. 
 To fit the Loewner framework, the interpolation points are split into column <code>p_c</code> and row <code>p_r</code> sets. 
 Notice here that the above model is rational along $x_1$ and $x_2$.
-
-<pre class="default prettyprint prettyprinted" style=""><code>CAS         = 55;
+Notice here that the above model is irrational and discontinuous one along $x_1$ and polynomial along $x_2$.
+<pre class="default prettyprint prettyprinted" style=""><code>CAS         = 1;
 [H,infoCas] = mlf.examples(CAS);
 n           = infoCas.n;
 p_c         = infoCas.p_c;
@@ -67,7 +67,7 @@ tab         = mlf.vec2mat(y,dim);
 Now we are ready to build the approximation. 
 In what follows, the <code>opt.ord_tol</code> set to $10^{-9}$, is used as the threshold for the single variable  order detection.
 Then the <code>opt.ord_show</code> is used to show the single variable normalized singular value drop (it may help to choose the different orders). 
-The <code>opt.method_null</code> option is used to choose the null space computation method (here SVD with normalization with respect to element with larger magnitude).
+The <code>opt.method_null</code> option is used to chose the null space computation method (here SVD with hiest magnitude normalization).
 The <code>opt.method</code> is used to select either the recursive (<code>'rec'</code>) or full (<code>'full'</code>) method.
 The algorithm computes <code>g</code>, a handle function; and <code>iloe</code>, gathering some informations about the process and notably the interpolation points $(\lambda_1,\lambda_2)$, the evaluation values $w$ and the barycentric weights $c$. 
 More specifically, the rational approximation takes the following form:
@@ -79,36 +79,21 @@ $$
 opt.ord_show    = true;   % show order detection
 opt.method_null = 'svd0'; % null space method
 opt.method      = 'rec';  % full or recursive method
-[g,iloe]        = mlf.alg1(tab,p_c,p_r,opt);
+[g,iloe]        = mlf.alg1(tab,p_c,p_r,opt);	
 </code></pre>
-Notice that the singular values decay along both variables $x_1$ and $x_2$ is sharp. 
-This indicates that the model generating the data is rational or polynomial and of degree $d_1=2$ and $d_2=2$. 
-This indicates that the dimension of the nulls psace is $N=(2+1)(2+1)=9$
+Notice that the singular values decay along the first variable $x_1$ is slow while it is sharp for the second $x_2$. 
+This indicates that the second variable $x_2$ is rational or polynomial and of degree $d_2=1$. 
+However, regarding the first one $x_1$, such a decay does not gives a clear indication on the approximation order, and degree $d_2=15$ is selected according to the singular value threshold. 
+Playing with <code>opt.ord_tol</code> allows to adjust this (see also <code>opt.ord_obj</code>).
 
 <div style="text-align: center;">
-	<img src="examples/approx_rat/svd.png" width="60%"></a><br>
+	<img src="examples/approx_irrat01/svd.png" width="60%"></a><br>
 	Normalized singular values of some of the single variable Loewner matrices.<br>
 </div>
 
-<h3>Verify the null space property</h3>
-Now it is also possible to verify that, $\mathbf c_2$ (given in <code>iloe.c</code>), the null space computed by the recursive approach (i.e. without constructing the 2-D Loewner matrix), is the solution of 
-$$
-\mathbb L_2 \mathbf c_2= 0.
-$$
-To this end one can compute the Loewner matrix and verify its kernel as follows.
-<pre class="default prettyprint prettyprinted" style=""><code>tabr        = iloe.tabr;
-W           = tabr(1:iloe.ord+1,1:iloe.ord+1);
-V           = tabr(iloe.ord+2:end,iloe.ord+2:end);
-LL          = mlf.loewnerMatrix(iloe.pc,iloe.pr,W,V);
-norm(LL*iloe.c)
-</code></pre>
-Remember that using <code>opt.method='rec'</code> we employ the recursive algorithm (faster and less memory greedy), while <code>opt.method='full'</code> computes the large-scale Loewner matrix and solves the large-scale null space problem.
-For small scale tensors, <code>'full'</code> is acceptable but when dimensions and size of the tensor increases, <code>'rec'</code> become a real game changer. 
-Again, recall that both are mathematically identical but, for some special cases (not clearly identified yet), the recursive approach may lead to numerical issues.
-
 <h3>Evaluate the resulting approximate</h3>
 Now we compare the original and approximate functions with 1000 random draw. 
-The result should be close to machine precision.
+The result should be small. Machine precision is not alway achieved due to the irrational contribution.
 <pre class="default prettyprint prettyprinted" style=""><code>for i = 1:1e3
     x_try   = rand(1,2);
     err(i)  = abs(H(x_try)-g(x_try));
@@ -119,7 +104,7 @@ mean(err)
 The below figure compares the original <code>H</code> and approximate <code>g</code> functions along $x_1$ and $x_2$ . 
 The frames show the value (left) and the mismatch (right).
 <div style="text-align: center;">
-	<img src="examples/approx_rat/eval.png" width="80%"></a><br>
+	<img src="examples/approx_irrat01/eval.png" width="80%"></a><br>
 </div>
 
 
@@ -137,12 +122,12 @@ vpa(simplify(num/den),3)
 vpa(PHI1,3)
 vpa(PHI2,3)
 </code></pre>
-Observe that in this case, the function is perfectly recovered. 
+Observe that in this case, the function is now approximated by a rational function!
 More specifically, the following KST like vector functions are obtained:
 $$
-\Phi_1(x_1) = \left(\begin{array}{c} \frac{1.11}{x_{1}+1.0}\\ \frac{1.11}{x_{1}+1.0}\\ \frac{1.11}{x_{1}+1.0}\\ -\frac{1.06}{x_{1}+0.0526}\\ -\frac{1.06}{x_{1}+0.0526}\\ -\frac{1.06}{x_{1}+0.0526}\\ \frac{1}{x_{1}-1.0}\\ \frac{1}{x_{1}-1.0}\\ \frac{1}{x_{1}-1.0} \end{array}\right)
+\Phi_1(x_1) = \left(\begin{array}{c} -\frac{222.0}{x_{1}+1.0}\\ -\frac{222.0}{x_{1}+1.0}\\ \frac{825.0}{x_{1}+0.895}\\ \frac{825.0}{x_{1}+0.895}\\ -\frac{1150.0}{x_{1}+0.789}\\ -\frac{1150.0}{x_{1}+0.789}\\ \frac{656.0}{x_{1}+0.684}\\ \frac{656.0}{x_{1}+0.684}\\ -\frac{184.0}{x_{1}+0.474}\\ -\frac{184.0}{x_{1}+0.474}\\ \frac{88.7}{x_{1}+0.368}\\ \frac{88.7}{x_{1}+0.368}\\ -\frac{17.0}{x_{1}+0.263}\\ -\frac{17.0}{x_{1}+0.263}\\ \frac{1.19}{x_{1}+0.158}\\ \frac{1.19}{x_{1}+0.158}\\ -\frac{0.0365}{x_{1}-0.0526}\\ -\frac{0.0365}{x_{1}-0.0526}\\ \frac{0.376}{x_{1}-0.158}\\ \frac{0.376}{x_{1}-0.158}\\ -\frac{1.84}{x_{1}-0.263}\\ -\frac{1.84}{x_{1}-0.263}\\ \frac{3.65}{x_{1}-0.368}\\ \frac{3.65}{x_{1}-0.368}\\ -\frac{11.3}{x_{1}-0.579}\\ -\frac{11.3}{x_{1}-0.579}\\ \frac{17.1}{x_{1}-0.684}\\ \frac{17.1}{x_{1}-0.684}\\ -\frac{9.0}{x_{1}-0.789}\\ -\frac{9.0}{x_{1}-0.789}\\ \frac{1}{x_{1}-1.0}\\ \frac{1}{x_{1}-1.0} \end{array}\right)
 \text{ and }
-\Phi_2(x_2) = \left(\begin{array}{c} \frac{1.11}{x_{2}+1.0}\\ -\frac{1.06}{x_{2}+0.0526}\\ \frac{1}{x_{2}-1.0}\\ \frac{1.11}{x_{2}+1.0}\\ -\frac{0.0117}{x_{2}+0.0526}\\ \frac{1}{x_{2}-1.0}\\ \frac{1.11}{x_{2}+1.0}\\ -\frac{1.06}{x_{2}+0.0526}\\ \frac{1}{x_{2}-1.0} \end{array}\right)
+\Phi_2(x_2) = \left(\begin{array}{c} -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10}\\ -\frac{1.0}{x_{2}+1.0}\\ \frac{1}{x_{2}+1.0e-10} \end{array}\right)
 $$
 									</div>
 								</section>

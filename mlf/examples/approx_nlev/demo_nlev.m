@@ -1,0 +1,130 @@
+clearvars, close all, clc
+%%% Chose model
+N   = 10;
+E   = diag(logspace(-4,10,N));
+d   = @(x) x(:,1)+0.01*exp(-x(:,1).*x(:,2));
+H   = @(x) ones(1,N)*(( d(x).*eye(N)+E )\ones(N,1) );
+Hf  = @(x1,x2) H([x1,x2]);
+% IP
+ip{1} = .15*exp(1i*linspace(0,pi,52)); % then complex conjugated
+ip{1} = ip{1}(2:end-1);
+ip{2} = linspace(30,35,50);
+% interlace
+for ii = 1:numel(ip)
+    p_c{ii} = ip{ii}(2:2:end);
+    p_r{ii} = ip{ii}(1:2:end);
+end
+% complex conjugate ip{1}
+pc{1} = [];
+pr{1} = [];
+for ii = 1:length(p_c{1})
+    pc{1} = [pc{1} p_c{1}(ii) conj(p_c{1}(ii))];
+    pr{1} = [pr{1} p_r{1}(ii) conj(p_r{1}(ii))];
+end
+p_c{1}  = pc{1};
+p_r{1}  = pr{1};
+ip{1}   = [p_c{1} p_r{1}];
+%%% Data tensor/rand
+tab     = mlf.make_tab(Hf,p_c,p_r,false);
+%%% Alg. 1: direct pLoe [A/G/P-V, 2025]
+opt.ord_tol     = 1e-9;  % SVD tolerance
+opt.method_null = 'svd0'; % null space method
+opt.method      = 'full';  % full or recursive method
+opt.ord_show    = true;   % show order detection step
+opt.ord_N       = 10;
+[g,iloe]        = mlf.alg1(tab,p_c,p_r,opt);
+%drawnow, mlf.figSavePNG('svd',.5), pause(.5)
+%%% rand
+for i = 1:1e3
+    x_try   = rand(1,2);
+    err(i)  = abs(H(x_try)-g(x_try));
+end
+mean(err)
+
+%%% Realization Lagrangian
+% Original
+[~,ireal]   = mlf.make_realization_lag(iloe.pc,iloe.w,iloe.c,[]);
+% Compressed
+[Hrl,ireal] = mlf.make_realization_compressed(ireal);
+
+%%
+figure, hold on, grid on
+pSpace  = linspace(min(ip{2}),max(ip{2}),50);
+for ii = 1:numel(pSpace)
+    cla
+    p   = pSpace(ii);
+    % Phi = sE-A
+    Phi = ireal.Phi;
+    A   = -Phi(0,p);
+    E   = Phi(1,p)+A;
+    lam = eig(A,E);
+    % % TF
+    % Htf         = mlf.tfp(iloe.pc,iloe.w,iloe.c,p);
+    % [b,a]       = tfdata(Htf);
+    % [res,lam,k] = residue(b{1},a{1});
+    %
+    %plot(real(C),imag(C),'k--','DisplayName','Contour $\partial\Omega$')
+    plot(real(ip{1}),imag(ip{1}),'.','DisplayName','$z_1(1,\cdots,n_1)$') 
+    plot(real(iloe.pc{1}),imag(iloe.pc{1}),'s','DisplayName','$\lambda_1$') 
+    plot(real(iloe.pr{1}),imag(iloe.pr{1}),'d','DisplayName','$\mu_1$') 
+    plot(real(lam),imag(lam),'+','DisplayName','$\lambda$ (est.)')
+    %plot(real(S(p)),imag(S(p)),'o','DisplayName','$\lambda$ (exact)')
+    xlabel('$\textrm{Re}(z)$','Interpreter','latex')
+    ylabel('$\textrm{Im}(z)$','Interpreter','latex')
+    title(sprintf('$p=%.2f$',p))
+    legend('show','Location','eastoutside')
+    set(gca,'xlim',1.3*max(abs(ip{1}))*[-1 1],'ylim',1.3*max(abs(ip{1}))*[-1 1])
+    %axis equal
+    axis square
+    drawnow, 
+    %mlf.figSavePDF(['figures/ex_' num2str(EX_NUM) '_' num2str(ii)])
+end
+
+% %%% Along first and second variables 
+% x1      = linspace(min(infoCas.ip{1}),max(infoCas.ip{1}),40)+rand(1)/10;
+% x2      = linspace(min(infoCas.ip{2}),max(infoCas.ip{2}),41)+rand(1)/10;
+% [X,Y]   = meshgrid(x1,x2);
+% rnd_p   = [];
+% if n > 2; rnd_p = mlf.rand(n-2,p_r(3:end),false); end
+% for ii = 1:numel(x1)
+%     for jj = 1:numel(x2)
+%         param           = [x1(ii) x2(jj) rnd_p];
+%         paramStr        = regexprep(num2str(param,36),'\s*',',');
+%         tab_ref(jj,ii)  = H(param);
+%         tab_app(jj,ii)  = g(param);
+%     end
+% end
+% %
+% figure
+% subplot(1,2,1); hold on, grid on
+% surf(X,Y,tab_app,'EdgeColor','none'), hold on
+% surf(X,Y,tab_ref,'EdgeColor','k','FaceColor','none')
+% xlabel('$x_1$','Interpreter','latex')
+% ylabel('$x_2$','Interpreter','latex')
+% title('Original vs. Approximation','Interpreter','latex')
+% legend('Approximation $g$','Original $H$')
+% axis tight, zlim([min(tab_ref(:)) max(tab_ref(:))]), view(-30,40)
+% subplot(1,2,2); hold on, grid on, axis tight
+% imagesc(log10(abs(tab_ref-tab_app)/max(abs(tab_ref(:)))),'XData',x1,'YData',x2)
+% xlabel('$x_1$','Interpreter','latex')
+% ylabel('$x_2$','Interpreter','latex')
+% title('{\bf log}(abs. err.)/max.','Interpreter','latex')
+% colorbar,
+% name = infoCas.name;
+% for ii = 1:numel(p_c), name = strrep(name,['\var{' num2str(ii) '}'],['x_{' num2str(ii) '}']); end
+% sgtitle(name,'Interpreter','latex','FontSize',25)
+% drawnow, mlf.figSavePNG('eval',.5), pause(.5)
+% 
+% %%% KST
+% [Bary,Lag,Cx]   = mlf.decoupling(iloe);
+% PHI1            = Bary{1}.*Lag{1};
+% PHI2            = Bary{2}.*Lag{2};
+% num             = simplify(sum(iloe.w.*PHI1.*PHI2));
+% den             = simplify(sum(PHI1.*PHI2));
+% vpa(simplify(num/den),3)
+% phi1 = latex(vpa(PHI1,3));
+% phi2 = latex(vpa(PHI2,3));
+% for ii = 1:numel(p_c)
+%     phi1 = strrep(phi1,['s_{' num2str(ii) '}'],['x_{' num2str(ii) '}']);
+%     phi2 = strrep(phi2,['s_{' num2str(ii) '}'],['x_{' num2str(ii) '}']);
+% end

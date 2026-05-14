@@ -1,0 +1,79 @@
+clearvars, close all, clc
+%%% Chose model
+CAS         = 3;
+[H,infoCas] = mlf.examples(CAS);
+n           = infoCas.n;
+p_c         = infoCas.p_c;
+p_r         = infoCas.p_r;
+%%% Data tensor/rand
+[y,x,dim]   = mlf.make_tab_vec(H,p_c,p_r);
+tab         = mlf.vec2mat(y,dim);
+%%% Alg. 1: direct pLoe [A/G/P-V, 2025]
+opt.ord_tol     = 1e-9;  % SVD tolerance
+opt.method_null = 'svd'; % null space method
+opt.method      = 'rec'; % full or recursive method
+opt.ord_show    = true;  % show order detection step
+[g,iloe]        = mlf.alg1(tab,p_c,p_r,opt);
+drawnow, mlf.figSavePNG('svd',.5), pause(.5)
+%%% Loewner matrix
+tabr        = iloe.tabr;
+W           = tabr(1:iloe.ord+1,1:iloe.ord+1);
+V           = tabr(iloe.ord+2:end,iloe.ord+2:end);
+LL          = mlf.loewnerMatrix(iloe.pc,iloe.pr,W,V);
+norm(LL*iloe.c)
+% opt.method      = 'full';  % full or recursive method
+% [~,iloe_full]   = mlf.alg1(tab,p_c,p_r,opt);
+%%% rand
+for i = 1:1e3
+    x_try   = rand(1,2);
+    err(i)  = abs(H(x_try)-g(x_try));
+end
+mean(err)
+%%% Along first and second variables 
+x1      = linspace(min(infoCas.ip{1}),max(infoCas.ip{1}),40)+rand(1)/10;
+x2      = linspace(min(infoCas.ip{2}),max(infoCas.ip{2}),41)+rand(1)/10;
+[X,Y]   = meshgrid(x1,x2);
+rnd_p   = [];
+if n > 2; rnd_p = mlf.rand(n-2,p_r(3:end),false); end
+for ii = 1:numel(x1)
+    for jj = 1:numel(x2)
+        param           = [x1(ii) x2(jj) rnd_p];
+        paramStr        = regexprep(num2str(param,36),'\s*',',');
+        tab_ref(jj,ii)  = H(param);
+        tab_app(jj,ii)  = g(param);
+    end
+end
+%
+figure
+subplot(1,2,1); hold on, grid on
+surf(X,Y,tab_app,'EdgeColor','none'), hold on
+surf(X,Y,tab_ref,'EdgeColor','k','FaceColor','none')
+xlabel('$x_1$','Interpreter','latex')
+ylabel('$x_2$','Interpreter','latex')
+title('Original vs. Approximation','Interpreter','latex')
+legend('Approximation $g$','Original $H$')
+axis tight, zlim([min(tab_ref(:)) max(tab_ref(:))]), view(-30,40)
+subplot(1,2,2); hold on, grid on, axis tight
+imagesc(log10(abs(tab_ref-tab_app)/max(abs(tab_ref(:)))),'XData',x1,'YData',x2)
+xlabel('$x_1$','Interpreter','latex')
+ylabel('$x_2$','Interpreter','latex')
+title('{\bf log}(abs. err.)/max.','Interpreter','latex')
+colorbar,
+name = infoCas.name;
+for ii = 1:numel(p_c), name = strrep(name,['\var{' num2str(ii) '}'],['x_{' num2str(ii) '}']); end
+sgtitle(name,'Interpreter','latex','FontSize',25)
+drawnow, mlf.figSavePNG('eval',.5), pause(.5)
+
+%%% KST
+[Bary,Lag,Cx]   = mlf.decoupling(iloe);
+PHI1            = Bary{1}.*Lag{1};
+PHI2            = Bary{2}.*Lag{2};
+num             = simplify(sum(iloe.w.*PHI1.*PHI2));
+den             = simplify(sum(PHI1.*PHI2));
+vpa(simplify(num/den),3)
+phi1 = latex(vpa(PHI1,3));
+phi2 = latex(vpa(PHI2,3));
+for ii = 1:numel(p_c)
+    phi1 = strrep(phi1,['s_{' num2str(ii) '}'],['x_{' num2str(ii) '}']);
+    phi2 = strrep(phi2,['s_{' num2str(ii) '}'],['x_{' num2str(ii) '}']);
+end
