@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>mLF - multivariate Loewner Framework</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-svg.js"></script>
+		<script>MathJax = {
+			  tex: {
+				inlineMath: {'[+]': [['$', '$']]}
+			  },
+			  svg: {
+				fontCache: 'global'
+			  }
+			};
+		</script>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<!-- Header -->
+								<header id="header">
+									<a href="index.html" class="logo"><strong>multivariate Loewner Framework</strong></a>
+									<ul class="icons">
+										<li><a href="https://github.com/cpoussot/mLF" target="_blank"><span class="label">GitHub</span></a></li>										
+									</ul>
+								</header>
+								<!-- Banner -->
+								<section id="banner">
+									<div class="content">
+										<h2>Nonlinear eigenvalues problem</h2>
+<!-- mLF download -->
+<h3>Define an eigenvalue problem and interpolation points</h3>
+Start by defining your eigenvalue problem <code>Phi</code> 
+$$
+\Phi(z,p) = (z+0.01 e^{-z p}) I_{10}-\text{diag}(\text{logspace}(-4,10,10)),
+$$
+and the fictious transfer function
+$$
+H(x_1,x_2) =  1_{1,10}\Phi(z,p)^{-1}1_{10,1}.
+$$
+<pre class="default prettyprint prettyprinted" style=""><code>E   = diag(logspace(-4,10,10));
+d   = @(x) x(:,1)+0.01*exp(-x(:,1).*x(:,2));
+H   = @(x) ones(1,10)*(( d(x).*eye(10)+E )\ones(10,1) );
+Hf  = @(x1,x2) H([x1,x2]);
+</code></pre>
+We also define the interpolation points along each variable. 
+To fit the Loewner framework, the interpolation points are split into column <code>p_c</code> and row <code>p_r</code> sets. 
+In addition, to preserve the symmetry and real matrices, the interpolation points are chosen to be closed by conjugation. 
+Notice here that the above model is an infinite (time-delayed) model.
+<pre class="default prettyprint prettyprinted" style=""><code>ip{1} = .1*exp(1i*linspace(0,pi,22)); % then complex conjugated
+ip{1} = ip{1}(2:end-1);
+ip{2} = 18:52;
+% interlace
+for ii = 1:numel(ip)
+    p_c{ii} = ip{ii}(2:2:end);
+    p_r{ii} = ip{ii}(1:2:end);
+end
+% complex conjugate ip{1}
+pc{1} = []; pr{1} = [];
+for ii = 1:length(p_c{1})
+    pc{1} = [pc{1} p_c{1}(ii) conj(p_c{1}(ii))];
+    pr{1} = [pr{1} p_r{1}(ii) conj(p_r{1}(ii))];
+end
+p_c{1} = [pc{1}];
+p_r{1} = [pr{1}];
+</code></pre>
+
+<h3>Build tensor</h3>
+Then, the tensorized data <code>tab</code> are constructed. Here leading to a 2-D tensor, and more specifically
+$$
+\mathcal T_2^{\otimes} \in \mathbb R^{40\times 35}
+$$
+<pre class="default prettyprint prettyprinted" style=""><code>tab = mlf.make_tab(Hf,p_c,p_r,true);
+</code></pre>
+
+<h3>Use the mLF (Alg. 1: direct [A/G/P-V, 2025])</h3>
+Now we are ready to build the approximation. 
+In what follows, the <code>opt.ord_tol</code> set to $10^{-12}$, is used as the threshold for the single variable  order detection.
+Then the <code>opt.ord_show</code> is used to show the single variable normalized singular value drop (it may help to choose the different orders). 
+The <code>opt.ord_obj</code> is used to control the complexity along each variables.
+The <code>opt.method_null</code> option is used to chose the null space computation method (here SVD with hiest magnitude normalization).
+The <code>opt.method</code> is used to select either the recursive (<code>'rec'</code>) or full (<code>'full'</code>) method.
+The algorithm computes <code>g</code>, a handle function; and <code>iloe</code>, gathering some informations about the process and notably the interpolation points $(\lambda_1,\lambda_2)$, the evaluation values $w$ and the barycentric weights $c$. 
+More specifically, the rational approximation takes the following form:
+$$
+g(x_{1},x_{2}) =
+\dfrac{\sum_{j_1=1}^{k_1}\sum_{j_2=1}^{k_2}\dfrac{c(j_1,j_2)w(j_1,j_2)}{(x_{1}-\lambda_{1}(j_1))(x_{2}-\lambda_{2}(j_2))}}{\sum_{j_1=1}^{k_1}\sum_{j_2=1}^{k_2} \dfrac{c(j_1,j_2)}{(x_{1}-\lambda_{1}(j_1))(x_{2}-\lambda_{2}(j_2))}}
+$$
+<pre class="default prettyprint prettyprinted" style=""><code>opt.ord_tol     = 1e-12;
+opt.method_null = 'svd0';
+opt.method      = 'full';
+opt.ord_obj     = [inf 8];
+opt.ord_show    = true;
+[Gloe,iloe]     = mlf.alg1(tab,p_c,p_r,opt);
+</code></pre>
+Notice that the singular values decay along the both variables is slow while. 
+This is quite standard in delayed systems. 
+Playing with <code>opt.ord_tol</code> allows to adjust this (see also <code>opt.ord_obj</code>).
+
+<div style="text-align: center;">
+	<img src="examples/approx_nlev01/svd.png" width="60%"></a><br>
+	Normalized singular values of some of the single variable Loewner matrices.<br>
+</div>
+
+<h3>Construct the associated realization</h3>
+Now we compute the multivariate realization (and its compressed version) as follows.
+<pre class="default prettyprint prettyprinted" style=""><code>% Original
+[~,info_l]      = mlf.make_realization_lag(iloe.pc,iloe.w,iloe.c,[]);
+% Compressed
+[Hrl,info_l]    = mlf.make_realization_compressed(info_l);
+</code></pre>
+
+The below figure compares the eigenvalues obtained by the parametric pencil associated to the realization, and approximate it to a single variable Loewner approximation. 
+This eigenvalues are computed by freezing the paramer $p$ and solving a standard generalized eigenvalue problem.
+<pre class="default prettyprint prettyprinted" style=""><code>
+Phir = info_l.Phi;
+A    = -Phir(0,p);
+E    =  Phir(1,p)+A;
+eigV = eig(A,E);
+</code></pre>
+
+The frame shows how well the eigenvalues are recovered!
+<div style="text-align: center;">
+	<img src="examples/approx_nlev01/ex_2_min18max_52.gif" width="100%"></a><br>
+</div>
+The above frame shows the interpolation points along the first $z$ variable, and the selected $\lambda_1$ and $\mu_1$ (circle). 
+It also shows the eigenvalues obtained by the standard Loewner framework, evaluated at each frozen $p$ value (purple triangle).
+									</div>
+								</section>
+								<ul class="contact">
+									<li class="icon solid fa-envelope">
+										<a href="mailto:charles.poussot-vassal@onera.fr">charles.poussot-vassal [at] onera.fr </a> 
+									</li>
+								</ul>
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+				<!-- <div w3-include-html="content.html"></div> -->
+				<div id="sidebar">
+					<div class="inner">
+						<!-- Menu -->
+						<nav id="menu">
+							<header class="major">
+								<h2>Menu</h2>
+							</header>
+							<ul>
+								<li><a href="./index.html">mLF in a nushell</a></li>
+								<li><a href="./gettingstarted.html">Getting started</a></li>
+								<li><a href="./API.html">API</a></li>
+								<li><a href="./examples.html">Examples</a></li>
+								<li><a href="./community.html">Loewner community</a></li>
+								<ul>
+									<li><a href="./loewner.html">Get familiar with Loewner</a></li>
+									<li><a href="./references.html">References</a></li>
+								</ul>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+
+			<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/include.js"></script>
+		</body>
+</html>
