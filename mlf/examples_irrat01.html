@@ -66,7 +66,7 @@ tab         = mlf.vec2mat(y,dim);
 Now we are ready to build the approximation. 
 In what follows, the <code>opt.ord_tol</code> set to $10^{-9}$, is used as the threshold for the single variable  order detection.
 Then the <code>opt.ord_show</code> is used to show the single variable normalized singular value drop (it may help to choose the different orders). 
-The <code>opt.method_null</code> option is used to chose the null space computation method (here SVD with hiest magnitude normalization).
+The <code>opt.method_null</code> option is used to chose the null space computation method (here SVD with highest magnitude normalization).
 The <code>opt.method</code> is used to select either the recursive (<code>'rec'</code>) or full (<code>'full'</code>) method.
 The algorithm computes <code>g</code>, a handle function; and <code>iloe</code>, gathering some informations about the process and notably the interpolation points $(\lambda_1,\lambda_2)$, the evaluation values $w$ and the barycentric weights $c$. 
 More specifically, the rational approximation takes the following form:

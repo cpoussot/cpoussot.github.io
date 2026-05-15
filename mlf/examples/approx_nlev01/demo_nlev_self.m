@@ -8,12 +8,12 @@ set(groot,'defaultlegendinterpreter','latex')
 % mLF
 addpath('/Users/charles/Documents/GIT/mLF')
 addpath('/Users/charles/Documents/GIT/LF')
-
+%
+SAVEIT  = false;
 %%% Examples article
-SAVEIT  = true;
 E   = diag(logspace(-4,10,10));
-d   = @(x) x(:,1)+0.01*exp(-x(:,1).*x(:,2));
-H   = @(x) ones(1,10)*(( d(x).*eye(10)+E )\ones(10,1) );
+Phi = @(x) (x(:,1)+0.01*exp(-x(:,1).*x(:,2)))*eye(10)+E;
+H   = @(x) ones(1,10)*(Phi(x)\ones(10,1) );
 Hf  = @(x1,x2) H([x1,x2]);
 % IP
 ip{1} = .1*exp(1i*linspace(0,pi,22)); % then complex conjugated
@@ -42,19 +42,19 @@ opt.method_null = 'svd0';
 opt.method      = 'full';
 opt.ord_obj     = [inf 8];
 opt.ord_show    = true;
-[Gloe,iloe]     = mlf.alg1(tab,p_c,p_r,opt);
+[g,iloe]        = mlf.alg1(tab,p_c,p_r,opt);
 if SAVEIT; drawnow, mlf.figSavePNG('svd',.5), pause(.5); end
 
 %%% Realization Lagrangian
 % Original
-[~,info_l]      = mlf.make_realization_lag(iloe.pc,iloe.w,iloe.c,[]);
+[~,ireal]   = mlf.make_realization_lag(iloe.pc,iloe.w,iloe.c,[]);
 % Compressed
-[Hrl,info_l]    = mlf.make_realization_compressed(info_l);
-
+[H,ireal]   = mlf.make_realization_compressed(ireal);
 %%
 handler = figure; hold on, grid on
 set(gcf, 'Color', 'white')
-pSpace  = linspace(min(ip{2}),max(ip{2}),50);
+pSpace  = ip{2};%linspace(min(ip{2}),max(ip{2}),50);
+pSpace  = linspace(min(ip{2}),max(ip{2}),80);
 for ii = 1:numel(pSpace)
     cla
     p   = pSpace(ii);
@@ -67,7 +67,7 @@ for ii = 1:numel(pSpace)
     [hloe,info_loe] = lf.loewner_tng(la,mu,W,V,R,L);
     lam_classik = eig(info_loe.Hr);
     % Phi = sE-A
-    Phir        = info_l.Phi;
+    Phir        = ireal.Phi;
     A           = -Phir(0,p);
     E           = Phir(1,p)+A;
     [eigV,eigv] = eig(A,E); eigv = diag(eigv);

@@ -47,14 +47,14 @@ $$
 H(x_1,x_2) =  1_{1,10}\Phi(z,p)^{-1}1_{10,1}.
 $$
 <pre class="default prettyprint prettyprinted" style=""><code>E   = diag(logspace(-4,10,10));
-d   = @(x) x(:,1)+0.01*exp(-x(:,1).*x(:,2));
-H   = @(x) ones(1,10)*(( d(x).*eye(10)+E )\ones(10,1) );
+Phi = @(x) (x(:,1)+0.01*exp(-x(:,1).*x(:,2)))*eye(10)+E;
+H   = @(x) ones(1,10)*(Phi(x)\ones(10,1) );
 Hf  = @(x1,x2) H([x1,x2]);
 </code></pre>
 We also define the interpolation points along each variable. 
 To fit the Loewner framework, the interpolation points are split into column <code>p_c</code> and row <code>p_r</code> sets. 
-In addition, to preserve the symmetry and real matrices, the interpolation points are chosen to be closed by conjugation. 
-Notice here that the above model is an infinite (time-delayed) model.
+In addition, to preserve the symmetry and allow real matrix realization, the interpolation points are chosen to be closed by conjugation. 
+Notice here that the above model $H(z,p)$ is an infinite (time-delayed) model.
 <pre class="default prettyprint prettyprinted" style=""><code>ip{1} = .1*exp(1i*linspace(0,pi,22)); % then complex conjugated
 ip{1} = ip{1}(2:end-1);
 ip{2} = 18:52;
@@ -72,6 +72,8 @@ end
 p_c{1} = [pc{1}];
 p_r{1} = [pr{1}];
 </code></pre>
+See below animated figure to view the distribution of the interpolation points. 
+They are located on a circle and mimic the Cauchy integral theorem.
 
 <h3>Build tensor</h3>
 Then, the tensorized data <code>tab</code> are constructed. Here leading to a 2-D tensor, and more specifically
@@ -85,8 +87,9 @@ $$
 Now we are ready to build the approximation. 
 In what follows, the <code>opt.ord_tol</code> set to $10^{-12}$, is used as the threshold for the single variable  order detection.
 Then the <code>opt.ord_show</code> is used to show the single variable normalized singular value drop (it may help to choose the different orders). 
-The <code>opt.ord_obj</code> is used to control the complexity along each variables.
-The <code>opt.method_null</code> option is used to chose the null space computation method (here SVD with hiest magnitude normalization).
+The <code>opt.ord_obj</code> is used to control the complexity along each variables: it is a vector with two entries, related to the first and second variable respectively. 
+Here <code>inf</code> means that the order along $z$ is automatically chosen while <code>8</code> means that along $p$, the order will be at most $8$.
+The <code>opt.method_null</code> option is used to chose the null space computation method (here SVD with highest magnitude normalization).
 The <code>opt.method</code> is used to select either the recursive (<code>'rec'</code>) or full (<code>'full'</code>) method.
 The algorithm computes <code>g</code>, a handle function; and <code>iloe</code>, gathering some informations about the process and notably the interpolation points $(\lambda_1,\lambda_2)$, the evaluation values $w$ and the barycentric weights $c$. 
 More specifically, the rational approximation takes the following form:
@@ -99,7 +102,7 @@ opt.method_null = 'svd0';
 opt.method      = 'full';
 opt.ord_obj     = [inf 8];
 opt.ord_show    = true;
-[Gloe,iloe]     = mlf.alg1(tab,p_c,p_r,opt);
+[g,iloe]        = mlf.alg1(tab,p_c,p_r,opt);
 </code></pre>
 Notice that the singular values decay along the both variables is slow while. 
 This is quite standard in delayed systems. 
@@ -113,15 +116,15 @@ Playing with <code>opt.ord_tol</code> allows to adjust this (see also <code>opt.
 <h3>Construct the associated realization</h3>
 Now we compute the multivariate realization (and its compressed version) as follows.
 <pre class="default prettyprint prettyprinted" style=""><code>% Original
-[~,info_l]      = mlf.make_realization_lag(iloe.pc,iloe.w,iloe.c,[]);
+[~,ireal]   = mlf.make_realization_lag(iloe.pc,iloe.w,iloe.c,[]);
 % Compressed
-[Hrl,info_l]    = mlf.make_realization_compressed(info_l);
+[H,ireal]   = mlf.make_realization_compressed(ireal);
 </code></pre>
 
 The below figure compares the eigenvalues obtained by the parametric pencil associated to the realization, and approximate it to a single variable Loewner approximation. 
 This eigenvalues are computed by freezing the paramer $p$ and solving a standard generalized eigenvalue problem.
 <pre class="default prettyprint prettyprinted" style=""><code>
-Phir = info_l.Phi;
+Phir = ireal.Phi;
 A    = -Phir(0,p);
 E    =  Phir(1,p)+A;
 eigV = eig(A,E);
