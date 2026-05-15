@@ -38,13 +38,12 @@ ip{1}   = [p_c{1} p_r{1}];
 tab = mlf.make_tab(Hf,p_c,p_r,true);
 %%% Lagrangian multivariate
 opt.ord_tol     = 1e-12;
-opt.method_null = 'svd0';
+opt.method_null = 'svd';
 opt.method      = 'full';
 opt.ord_obj     = [inf 8];
 opt.ord_show    = true;
 [g,iloe]        = mlf.alg1(tab,p_c,p_r,opt);
 if SAVEIT; drawnow, mlf.figSavePNG('svd',.5), pause(.5); end
-
 %%% Realization Lagrangian
 % Original
 [~,ireal]   = mlf.make_realization_lag(iloe.pc,iloe.w,iloe.c,[]);
@@ -55,6 +54,7 @@ handler = figure; hold on, grid on
 set(gcf, 'Color', 'white')
 pSpace  = ip{2};%linspace(min(ip{2}),max(ip{2}),50);
 pSpace  = linspace(min(ip{2}),max(ip{2}),80);
+%pSpace  = [20 30 35 50];
 for ii = 1:numel(pSpace)
     cla
     p   = pSpace(ii);
@@ -70,7 +70,10 @@ for ii = 1:numel(pSpace)
     Phir        = ireal.Phi;
     A           = -Phir(0,p);
     E           = Phir(1,p)+A;
-    [eigV,eigv] = eig(A,E); eigv = diag(eigv);
+    [eigV,eigv] = eig(A,E); eigv = diag(eigv); 
+    eigv(isinf(eigv))=[];
+    eigv(isnan(eigv))=[];
+    uns = numel(find(eigv(real(eigv)>0)));
     %
     plot(real(ip{1}),imag(ip{1}),'.','DisplayName','$z_1(1,\cdots,n_1)$') 
     plot(real(iloe.pc{1}),imag(iloe.pc{1}),'s','DisplayName','$\lambda_1$') 
@@ -79,9 +82,10 @@ for ii = 1:numel(pSpace)
     plot(real(eigv),imag(eigv),'v','DisplayName','$\lambda$ (est.)')
     xlabel('$\textrm{Re}(z)$','Interpreter','latex')
     ylabel('$\textrm{Im}(z)$','Interpreter','latex')
-    title(sprintf('$p=%.2f$',p))
+    title(sprintf('$p=%.2f$ (%d unstable)',p,uns))
     legend('show','Location','eastoutside')
     set(gca,'xlim',.15*[-1 1],'ylim',.15*[-1 1])
+    %set(gca,'xlim',[-2 2],'ylim',1*[-1 1])
     axis square
     drawnow, %pause
     %if SAVEIT; mlf.figSavePDF(['figures/ex_' num2str(2) '_' num2str(ii)]); end
