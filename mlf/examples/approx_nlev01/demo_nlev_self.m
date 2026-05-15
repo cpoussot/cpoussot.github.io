@@ -9,7 +9,7 @@ set(groot,'defaultlegendinterpreter','latex')
 addpath('/Users/charles/Documents/GIT/mLF')
 addpath('/Users/charles/Documents/GIT/LF')
 %
-SAVEIT  = false;
+SAVEIT  = true;
 %%% Examples article
 E   = diag(logspace(-4,10,10));
 Phi = @(x) (x(:,1)+0.01*exp(-x(:,1).*x(:,2)))*eye(10)+E;

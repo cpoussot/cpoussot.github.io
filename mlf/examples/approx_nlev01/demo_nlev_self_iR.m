@@ -9,7 +9,7 @@ set(groot,'defaultlegendinterpreter','latex')
 addpath('/Users/charles/Documents/GIT/mLF')
 addpath('/Users/charles/Documents/GIT/LF')
 %
-SAVEIT  = false;
+SAVEIT  = true;
 %%% Examples article
 E   = diag(logspace(-4,10,10));
 Phi = @(x) (x(:,1)+0.01*exp(-x(:,1).*x(:,2)))*eye(10)+E;
@@ -57,7 +57,7 @@ handler = figure; hold on, grid on
 set(gcf, 'Color', 'white')
 pSpace  = ip{2};%linspace(min(ip{2}),max(ip{2}),50);
 pSpace  = linspace(min(ip{2}),max(ip{2}),80);
-pSpace  = [20 30 35 50]
+%pSpace  = [20 30 35 50]
 for ii = 1:numel(pSpace)
     cla
     p   = pSpace(ii);
@@ -78,7 +78,7 @@ for ii = 1:numel(pSpace)
     eigv(isnan(eigv))=[];
     uns = numel(find(eigv(real(eigv)>0)));
     %
-    plot(real(C),imag(C),'k--','DisplayName','Contour $\partial\Omega$')
+    %plot(real(C),imag(C),'k--','DisplayName','Contour $\partial\Omega$')
     plot(real(ip{1}),imag(ip{1}),'.','DisplayName','$z_1(1,\cdots,n_1)$') 
     plot(real(iloe.pc{1}),imag(iloe.pc{1}),'s','DisplayName','$\lambda_1$') 
     plot(real(iloe.pr{1}),imag(iloe.pr{1}),'d','DisplayName','$\mu_1$') 
@@ -91,7 +91,7 @@ for ii = 1:numel(pSpace)
     set(gca,'xlim',.15*[-1 1],'ylim',.15*[-1 1])
     %set(gca,'xlim',[-1 .5],'ylim',.5*[-1 1])
     axis square
-    drawnow, pause
+    drawnow, 
     %if SAVEIT; mlf.figSavePDF(['figures/ex_' num2str(2) '_' num2str(ii)]); end
     if SAVEIT; mlf.saveGIF(handler,ii,['ex_iR_' num2str(2) '_min' num2str(min(pSpace)) 'max_' num2str(max(pSpace)) ]); end
 end
