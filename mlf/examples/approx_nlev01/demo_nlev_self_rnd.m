@@ -49,7 +49,7 @@ if SAVEIT; drawnow, mlf.figSavePNG('svd_rnd',.5), pause(.5); end
 % Original
 [~,ireal]   = mlf.make_realization_lag(iloe.pc,iloe.w,iloe.c,[]);
 % Compressed
-[H,ireal]   = mlf.make_realization_compressed(ireal);
+[Hr,ireal]  = mlf.make_realization_compressed(ireal);
 %%
 C   = .075*exp(1i*linspace(0,2*pi,1e3));
 handler = figure; hold on, grid on
@@ -93,3 +93,54 @@ for ii = 1:numel(pSpace)
     %if SAVEIT; mlf.figSavePDF(['figures/ex_' num2str(2) '_' num2str(ii)]); end
     if SAVEIT; mlf.saveGIF(handler,ii,['ex_rnd_' num2str(2) '_min' num2str(min(pSpace)) 'max_' num2str(max(pSpace)) ]); end
 end
+
+%%
+handler = figure;
+set(gcf, 'Color', 'white')
+for ii = 1:numel(pSpace)
+    clf
+    p       = pSpace(ii);
+    x       = linspace(-.15,.15,102);
+    y       = linspace(-.15,.15,101);
+    [X,Y]   = meshgrid(x,y);
+    for i = 1:numel(x)
+        for j = 1:numel(y)
+            tab_ref(j,i) = H([x(i)+1i*y(j),p]);
+            tab_app(j,i) = g([x(i)+1i*y(j),p]);
+        end
+    end
+    %
+    subplot(1,2,1); hold on, grid on
+    surf(X,Y,log10(abs(tab_app)),'EdgeColor','none'), hold on
+    surf(X,Y,log10(abs(tab_ref)),'EdgeColor','k','FaceColor','none')
+    xlabel('$x$','Interpreter','latex')
+    ylabel('$y$','Interpreter','latex')
+    zlabel('dB','Interpreter','latex')
+    title('Original vs. Approximation','Interpreter','latex')
+    legend('Approximation $g(x+\imath y,p)$','Original $H(x+\imath y,p)$')
+    axis tight, zlim([min(log10(abs(tab_ref(:)))) max(log10(abs(abs(tab_ref(:)))))]), view(-30,40)
+    subplot(1,2,2); hold on, grid on, axis tight
+    imagesc(log10(abs(tab_ref-tab_app)/max(abs(tab_ref(:)))),'XData',x,'YData',y)
+    %
+    Phir        = ireal.Phi;
+    A           = -Phir(0,p);
+    E           = Phir(1,p)+A;
+    [eigV,eigv] = eig(A,E); eigv = diag(eigv); 
+    eigv(isinf(eigv))=[];
+    eigv(isnan(eigv))=[];
+    uns = numel(find(eigv(real(eigv)>0)));
+    plot(real(iloe.pc{1}),imag(iloe.pc{1}),'s','DisplayName','$\lambda_1$') 
+    plot(real(eigv),imag(eigv),'v','DisplayName','$\lambda$ (est.)')
+    set(gca,'xlim',.15*[-1 1],'ylim',.15*[-1 1])
+    legend('show','Location','Best')
+    %
+    xlabel('$x$','Interpreter','latex')
+    ylabel('$y$','Interpreter','latex')
+    title('{\bf log}(abs. err.)/max.','Interpreter','latex')
+    colorbar,
+    %
+    sgtitle(['$p=$' num2str(p)],'Interpreter','latex','FontSize',25)
+    drawnow, 
+    if SAVEIT; mlf.saveGIF(handler,ii,['ex_rnd_eval_' num2str(2) '_min' num2str(min(pSpace)) 'max_' num2str(max(pSpace)) ]); end
+end
+

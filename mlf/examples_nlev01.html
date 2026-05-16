@@ -46,6 +46,10 @@ and the fictious transfer function
 $$
 H(x_1,x_2) =  1_{1,10}\Phi(z,p)^{-1}1_{10,1}.
 $$
+The objective is to find eigenvalues $\lambda(p)\in\mathbb C$ and eigenvectors $V(p)$ such that
+$$
+\Phi(\lambda(p),p)V(p) = 0 \text{~~for $p\in \mathcal P$}.
+$$
 <pre class="default prettyprint prettyprinted" style=""><code>E   = diag(logspace(-4,10,10));
 Phi = @(x) (x(:,1)+0.01*exp(-x(:,1).*x(:,2)))*eye(10)+E;
 H   = @(x) ones(1,10)*(Phi(x)\ones(10,1) );
@@ -147,6 +151,13 @@ Notice that other eigenvalues are discovered.
 <div style="text-align: center;">
 	<img src="examples/approx_nlev01/ex_rnd_2_min18max_52.gif" width="100%"></a><br>
 </div>
+Finally, one can also compare the values of the original and approximated functions for the different interpolation cases. First the circle, second the vertical axis, last a random selection:
+<div style="text-align: center;">
+	<img src="examples/approx_nlev01/ex_eval_2_min18max_52.gif" width="100%"></a><br>
+	<img src="examples/approx_nlev01/ex_iR_eval_2_min18max_52.gif" width="100%"></a><br>
+	<img src="examples/approx_nlev01/ex_rnd_eval_2_min18max_52.gif" width="100%"></a><br>
+</div>
+
 
 									</div>
 								</section>
