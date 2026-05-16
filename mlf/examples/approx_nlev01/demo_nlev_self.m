@@ -75,7 +75,7 @@ for ii = 1:numel(pSpace)
     eigv(isnan(eigv))=[];
     uns = numel(find(eigv(real(eigv)>0)));
     %
-    plot(real(ip{1}),imag(ip{1}),'.','DisplayName','$z_1(1,\cdots,n_1)$') 
+    plot(real(ip{1}),imag(ip{1}),'.','DisplayName','$z(1,\cdots,n_1)$') 
     plot(real(iloe.pc{1}),imag(iloe.pc{1}),'s','DisplayName','$\lambda_1$') 
     plot(real(iloe.pr{1}),imag(iloe.pr{1}),'d','DisplayName','$\mu_1$') 
     %plot(real(lam_classik),imag(lam_classik),'^','DisplayName','$\lambda$ (std. Loewner, $p$ frozen)')
