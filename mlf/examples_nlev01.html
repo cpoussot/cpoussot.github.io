@@ -35,29 +35,30 @@
 								<!-- Banner -->
 								<section id="banner">
 									<div class="content">
-										<h2>Nonlinear eigenvalues problem</h2>
+										<h2>Nonlinear eigenvalues problem (NEVP)</h2>
 <!-- mLF download -->
 <h3>Define an eigenvalue problem and interpolation points</h3>
-Start by defining your eigenvalue problem <code>Phi</code> 
+Start by defining your eigenvalue problem.
+The objective is to find eigenvalues $\lambda(p)\in\mathbb C$ and eigenvectors $V(p)\in C^n$ of $\Phi:\mathbb C \times \mathbb C \leftarrow \mathbb C^{n \times n}$ <code>Phi</code> such that
+$$
+\Phi(\lambda(p),p)V(p) = 0 \text{~~for $p\in \mathcal P$},
+$$
+where
 $$
 \Phi(z,p) = (z+0.01 e^{-z p}) I_{10}-\text{diag}(\text{logspace}(-4,10,10)),
 $$
-and the fictious transfer function
-$$
-H(z,p) =  1_{1,10}\Phi(z,p)^{-1}1_{10,1}.
-$$
-The objective is to find eigenvalues $\lambda(p)\in\mathbb C$ and eigenvectors $V(p)\in C^n$ of $\Phi:\mathbb C \times \mathbb C \leftarrow \mathbb C^{n \times n}$ such that
-$$
-\Phi(\lambda(p),p)V(p) = 0 \text{~~for $p\in \mathcal P$}.
-$$
 This highly active problem can be solved by applying NLEVP for every frozen $p$-parameter value. 
-Here instead we suggest to approximate the multivariate function $H(z,p)$ by a mulitvariate rational function and its associated realization; thus leading to classical GEVP resolution instead.
+Here, to attack this problem we suggest to approximate the fictious multivariate function $H(z,p)$ given as
+$$
+H(z,p) =  1_{1,10}\Phi(z,p)^{-1}1_{10,1},
+$$
+by a multivariate rational function and its associated realization, thus leading to classical GEVP (generalized eigenvalue problem) resolution instead.
 <pre class="default prettyprint prettyprinted" style=""><code>E   = diag(logspace(-4,10,10));
 Phi = @(x) (x(:,1)+0.01*exp(-x(:,1).*x(:,2)))*eye(10)+E;
 H   = @(x) ones(1,10)*(Phi(x)\ones(10,1) );
 Hf  = @(x1,x2) H([x1,x2]);
 </code></pre>
-We also define the interpolation points along each variable. 
+We define the interpolation points along each variable. 
 To fit the Loewner framework, the interpolation points are split into column <code>p_c</code> and row <code>p_r</code> sets. 
 In addition, to preserve the symmetry and allow real matrix realization, the interpolation points are chosen to be closed by conjugation. 
 Notice here that the above model $H(z,p)$ is an infinite (time-delayed) model.
@@ -78,8 +79,8 @@ end
 p_c{1} = [pc{1}];
 p_r{1} = [pr{1}];
 </code></pre>
-See below animated figure to view the distribution of the interpolation points. 
-They are located on a circle and mimic the Cauchy integral theorem.
+See below animated figure to view the distribution of the interpolation points (we also try/discuss different distributions). 
+In the case coded above, the interpolation points are located on a circle, to mimic the Cauchy integral theorem.
 
 <h3>Build tensor</h3>
 Then, the tensorized data <code>tab</code> are constructed. Here leading to a 2-D tensor, and more specifically
@@ -90,7 +91,7 @@ $$
 </code></pre>
 
 <h3>Use the mLF (Alg. 1: direct [A/G/P-V, 2025])</h3>
-Now we are ready to build the approximation. 
+Now we are ready to build the rational approximation. 
 In what follows, the <code>opt.ord_tol</code> set to $10^{-12}$, is used as the threshold for the single variable  order detection.
 Then the <code>opt.ord_show</code> is used to show the single variable normalized singular value drop (it may help to choose the different orders). 
 The <code>opt.ord_obj</code> is used to control the complexity along each variables: it is a vector with two entries, related to the first and second variable respectively. 
@@ -110,8 +111,9 @@ opt.ord_obj     = [inf 8];
 opt.ord_show    = true;
 [g,iloe]        = mlf.alg1(tab,p_c,p_r,opt);
 </code></pre>
-Notice that the singular values decay along the both variables is slow while. 
+Notice that the singular values decay along the both variables is slow. 
 This is quite standard in delayed systems. 
+Here both variables are applied on the exponential term.
 Playing with <code>opt.ord_tol</code> allows to adjust this (see also <code>opt.ord_obj</code>).
 
 <div style="text-align: center;">
@@ -121,14 +123,15 @@ Playing with <code>opt.ord_tol</code> allows to adjust this (see also <code>opt.
 
 <h3>Construct the associated realization</h3>
 Now we compute the multivariate realization (and its compressed version) as follows.
+The realization handle function is given in <code>Hr</code>, and informatoin about the resolvant are in the structure <code>ireal</code>.
 <pre class="default prettyprint prettyprinted" style=""><code>% Original
 [~,ireal]   = mlf.make_realization_lag(iloe.pc,iloe.w,iloe.c,[]);
 % Compressed
 [Hr,ireal]  = mlf.make_realization_compressed(ireal);
 </code></pre>
 
-The below figure compares the eigenvalues obtained by the parametric pencil associated to the realization, and approximate it to a single variable Loewner approximation. 
-This eigenvalues are computed by freezing the paramer $p$ and solving a standard generalized eigenvalue problem.
+The below figure compares the eigenvalues obtained by the parametric pencil associated to the realization. 
+This eigenvalues are computed by freezing the paramer $p$ and solving a classical GEVP (generalized eigenvalue problem).
 <pre class="default prettyprint prettyprinted" style=""><code>
 Phir = ireal.Phi;
 A    = -Phir(0,p);
@@ -153,14 +156,15 @@ Notice that other eigenvalues are discovered.
 <div style="text-align: center;">
 	<img src="examples/approx_nlev01/ex_rnd_2_min18max_52.gif" width="100%"></a><br>
 </div>
-Finally, one can also compare the values of the original and approximated functions for the different interpolation cases. First the circle, second the vertical axis, last a random selection:
+Finally, one should also also compare the values of the original and approximated functions for the different interpolation cases. 
+First the circle, second the vertical axis, last a random selection.
 <div style="text-align: center;">
 	<img src="examples/approx_nlev01/ex_eval_2_min18max_52.gif" width="100%"></a><br>
 	<img src="examples/approx_nlev01/ex_iR_eval_2_min18max_52.gif" width="100%"></a><br>
 	<img src="examples/approx_nlev01/ex_rnd_eval_2_min18max_52.gif" width="100%"></a><br>
 </div>
-
-
+It is not yet well understood which one is the most resilient or accurate.
+In addition, spurious poles may also be detected by some mechanisms, to be studied.
 									</div>
 								</section>
 								<ul class="contact">
