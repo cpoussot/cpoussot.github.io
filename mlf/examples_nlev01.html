@@ -44,12 +44,14 @@ $$
 $$
 and the fictious transfer function
 $$
-H(x_1,x_2) =  1_{1,10}\Phi(z,p)^{-1}1_{10,1}.
+H(z,p) =  1_{1,10}\Phi(z,p)^{-1}1_{10,1}.
 $$
-The objective is to find eigenvalues $\lambda(p)\in\mathbb C$ and eigenvectors $V(p)$ such that
+The objective is to find eigenvalues $\lambda(p)\in\mathbb C$ and eigenvectors $V(p)\in C^n$ of $\Phi:\mathbb C \times \mathbb C \leftarrow \mathbb C^{n \times n}$ such that
 $$
 \Phi(\lambda(p),p)V(p) = 0 \text{~~for $p\in \mathcal P$}.
 $$
+This highly active problem can be solved by applying NLEVP for every frozen $p$-parameter value. 
+Here instead we suggest to approximate the multivariate function $H(z,p)$ by a mulitvariate rational function and its associated realization; thus leading to classical GEVP resolution instead.
 <pre class="default prettyprint prettyprinted" style=""><code>E   = diag(logspace(-4,10,10));
 Phi = @(x) (x(:,1)+0.01*exp(-x(:,1).*x(:,2)))*eye(10)+E;
 H   = @(x) ones(1,10)*(Phi(x)\ones(10,1) );
@@ -122,7 +124,7 @@ Now we compute the multivariate realization (and its compressed version) as foll
 <pre class="default prettyprint prettyprinted" style=""><code>% Original
 [~,ireal]   = mlf.make_realization_lag(iloe.pc,iloe.w,iloe.c,[]);
 % Compressed
-[H,ireal]   = mlf.make_realization_compressed(ireal);
+[Hr,ireal]  = mlf.make_realization_compressed(ireal);
 </code></pre>
 
 The below figure compares the eigenvalues obtained by the parametric pencil associated to the realization, and approximate it to a single variable Loewner approximation. 
