@@ -9,7 +9,7 @@ set(groot,'defaultlegendinterpreter','latex')
 addpath('/Users/charles/Documents/GIT/mLF')
 addpath('/Users/charles/Documents/GIT/LF')
 %
-SAVEIT  = false;
+SAVEIT  = true;
 %%% Examples article
 E   = diag(logspace(-4,10,10));
 Phi = @(x) (x(:,1)+0.01*exp(-x(:,1).*x(:,2)))*eye(10)+E;
@@ -118,7 +118,8 @@ for ii = 1:numel(pSpace)
     zlabel('dB','Interpreter','latex')
     title('Original vs. Approximation','Interpreter','latex')
     legend('Approximation $g(x+\imath y,p)$','Original $H(x+\imath y,p)$')
-    axis tight, zlim([min(log10(abs(tab_ref(:)))) max(log10(abs(abs(tab_ref(:)))))]), view(-30,40)
+    %axis tight, zlim([min(log10(abs(tab_ref(:)))) max(log10(abs(abs(tab_ref(:)))))]), view(-30,40)
+    axis tight, zlim([-1 4]), view(-30,40)
     subplot(1,2,2); hold on, grid on, axis tight
     imagesc(log10(abs(tab_ref-tab_app)/max(abs(tab_ref(:)))),'XData',x,'YData',y)
     %
