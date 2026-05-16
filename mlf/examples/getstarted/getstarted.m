@@ -7,6 +7,7 @@ list_factory = fieldnames(get(groot,'factory')); index_interpreter = find(contai
 addpath('/Users/charles/Documents/GIT/mlf')
 
 %%% Define model
+rng(1)
 n       = 3;
 H       = @(x) x(:,1).*x(:,2)+x(:,1).*x(:,3)+x(:,2).*x(:,3);
 
@@ -27,7 +28,7 @@ T           = mlf.vec2mat(y,dim);
 opt.ord_tol     = 1e-8;
 opt.ord_show    = true;
 [g,iloe]        = mlf.alg1(T,p_c,p_r,opt);
-drawnow, mlf.figSavePNG('svd',.5), pause(.5)
+%drawnow, mlf.figSavePNG('svd',.5), pause(.5)
 
 %%% Some mismatch comparison
 for i = 1:1e3
@@ -44,6 +45,14 @@ PHI3            = Bary{3}.*Lag{3};
 num             = simplify(sum(iloe.w.*PHI1.*PHI2.*PHI3));
 den             = simplify(sum(PHI1.*PHI2.*PHI3));
 simplify(num/den)
+phi1 = latex((PHI1));
+phi2 = latex((PHI2));
+phi3 = latex((PHI3));
+for ii = 1:numel(p_c)
+    phi1 = strrep(phi1,['s_{' num2str(ii) '}'],['x_{' num2str(ii) '}']);
+    phi2 = strrep(phi2,['s_{' num2str(ii) '}'],['x_{' num2str(ii) '}']);
+    phi3 = strrep(phi3,['s_{' num2str(ii) '}'],['x_{' num2str(ii) '}']);
+end
 
 %%% Plot some results
 % Along first and second variables 

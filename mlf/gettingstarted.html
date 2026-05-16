@@ -130,6 +130,14 @@ den             = simplify(sum(PHI1.*PHI2.*PHI3));
 simplify(num/den)
 </code></pre>
 Observe that in this case, the polynomial function is exactly recovered!
+In addition, the following KST like vector functions are obtained:
+$$
+\Phi_1(x_1) = \left(\begin{array}{c} -\frac{1}{x_{1}+\frac{7}{9}}\\ -\frac{1}{x_{1}+\frac{7}{9}}\\ -\frac{1}{x_{1}+\frac{7}{9}}\\ -\frac{1}{x_{1}+\frac{7}{9}}\\ \frac{1}{x_{1}-1}\\ \frac{1}{x_{1}-1}\\ \frac{1}{x_{1}-1}\\ \frac{1}{x_{1}-1} \end{array}\right)
+\text{ , }
+\Phi_2(x_2) = \left(\begin{array}{c} -\frac{1}{x_{2}+\frac{7}{9}}\\ -\frac{1}{x_{2}+\frac{7}{9}}\\ \frac{1}{x_{2}-1}\\ \frac{1}{x_{2}-1}\\ -\frac{1}{x_{2}+\frac{7}{9}}\\ -\frac{1}{x_{2}+\frac{7}{9}}\\ \frac{1}{x_{2}-1}\\ \frac{1}{x_{2}-1} \end{array}\right)
+\text{ and }
+\Phi_3(x_3) = \left(\begin{array}{c} -\frac{1}{x_{3}+\frac{7}{9}}\\ \frac{1}{x_{3}-1}\\ -\frac{1}{x_{3}+\frac{7}{9}}\\ \frac{1}{x_{3}-1}\\ -\frac{1}{x_{3}+\frac{7}{9}}\\ \frac{1}{x_{3}-1}\\ -\frac{1}{x_{3}+\frac{7}{9}}\\ \frac{1}{x_{3}-1} \end{array}\right)
+$$
 <p>
 More examples are detailed in the <a href="examples.html">examples</a> page.
 </p>
