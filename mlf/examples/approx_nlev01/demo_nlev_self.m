@@ -59,6 +59,11 @@ for ii = 1:numel(pSpace)
     cla
     p   = pSpace(ii);
     Hfp = @(x) Hf(x,p);    
+    %%% Lambert W
+    A0          = -E;
+    A1          = -.01*eye(10);
+    lam_lambert = lambert(A0,A1,p);
+    lam_lambert = lam_lambert(:);
     %%% Loewner classic
     la  = p_c{1}; k = length(la); R = ones(1,k);
     mu  = p_r{1}; q = length(mu); L = ones(q,1);
@@ -68,9 +73,9 @@ for ii = 1:numel(pSpace)
     lam_classik = eig(info_loe.Hr);
     % Phi = sE-A
     Phir        = ireal.Phi;
-    A           = -Phir(0,p);
-    E           = Phir(1,p)+A;
-    [eigV,eigv] = eig(A,E); eigv = diag(eigv); 
+    Ar          = -Phir(0,p);
+    Er          = Phir(1,p)+Ar;
+    [eigV,eigv] = eig(Ar,Er); eigv = diag(eigv); 
     eigv(isinf(eigv))=[];
     eigv(isnan(eigv))=[];
     uns = numel(find(eigv(real(eigv)>0)));
@@ -78,6 +83,7 @@ for ii = 1:numel(pSpace)
     plot(real(ip{1}),imag(ip{1}),'.','DisplayName','$z(1,\cdots,n_1)$') 
     plot(real(iloe.pc{1}),imag(iloe.pc{1}),'s','DisplayName','$\lambda_1$') 
     plot(real(iloe.pr{1}),imag(iloe.pr{1}),'d','DisplayName','$\mu_1$') 
+    plot(real(lam_lambert),imag(lam_lambert),'ro','DisplayName','True')
     %plot(real(lam_classik),imag(lam_classik),'^','DisplayName','$\lambda$ (std. Loewner, $p$ frozen)')
     plot(real(eigv),imag(eigv),'v','DisplayName','$\lambda$ (est.)')
     xlabel('$\textrm{Re}(z)$','Interpreter','latex')
@@ -85,9 +91,8 @@ for ii = 1:numel(pSpace)
     title(sprintf('$p=%.2f$ (%d unstable)',p,uns))
     legend('show','Location','eastoutside')
     set(gca,'xlim',.15*[-1 1],'ylim',.15*[-1 1])
-    %set(gca,'xlim',[-2 2],'ylim',1*[-1 1])
     axis square
-    drawnow, %pause
+    drawnow
     %if SAVEIT; mlf.figSavePDF(['figures/ex_' num2str(2) '_' num2str(ii)]); end
     if SAVEIT; mlf.saveGIF(handler,ii,['ex_' num2str(2) '_min' num2str(min(pSpace)) 'max_' num2str(max(pSpace)) ]); end
 end
@@ -120,15 +125,22 @@ for ii = 1:numel(pSpace)
     axis tight, zlim([-1 4]), view(-30,40)
     subplot(1,2,2); hold on, grid on, axis tight
     imagesc(log10(abs(tab_ref-tab_app)/max(abs(tab_ref(:)))),'XData',x,'YData',y)
+    %%% Lambert W
+    A0          = -E;
+    A1          = -.01*eye(10);
+    lam_lambert = lambert(A0,A1,p);
+    lam_lambert = lam_lambert(:);
     %
     Phir        = ireal.Phi;
-    A           = -Phir(0,p);
-    E           = Phir(1,p)+A;
-    [eigV,eigv] = eig(A,E); eigv = diag(eigv); 
+    Ar          = -Phir(0,p);
+    Er          = Phir(1,p)+Ar;
+    [eigV,eigv] = eig(Ar,Er); eigv = diag(eigv); 
     eigv(isinf(eigv))=[];
     eigv(isnan(eigv))=[];
     uns = numel(find(eigv(real(eigv)>0)));
+    %
     plot(real(iloe.pc{1}),imag(iloe.pc{1}),'s','DisplayName','$\lambda_1$') 
+    plot(real(lam_lambert),imag(lam_lambert),'ro','DisplayName','True')
     plot(real(eigv),imag(eigv),'v','DisplayName','$\lambda$ (est.)')
     set(gca,'xlim',.15*[-1 1],'ylim',.15*[-1 1])
     legend('show','Location','Best')
