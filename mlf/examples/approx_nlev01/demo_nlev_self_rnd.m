@@ -97,7 +97,7 @@ for ii = 1:numel(pSpace)
     axis square
     drawnow, %pause
     %if SAVEIT; mlf.figSavePDF(['figures/ex_' num2str(2) '_' num2str(ii)]); end
-    if SAVEIT; mlf.saveGIF(handler,ii,['ex_rnd_' num2str(2) '_min' num2str(min(pSpace)) 'max_' num2str(max(pSpace)) ]); end
+    if SAVEIT; mlf.saveGIF(handler,ii,['ex_rnd_' num2str(2) '_min' num2str(min(pSpace)) 'max' num2str(max(pSpace)) ]); end
 end
 
 %%
@@ -154,6 +154,6 @@ for ii = 1:numel(pSpace)
     %
     sgtitle(['$p=$' num2str(p)],'Interpreter','latex','FontSize',25)
     drawnow, 
-    if SAVEIT; mlf.saveGIF(handler,ii,['ex_rnd_eval_' num2str(2) '_min' num2str(min(pSpace)) 'max_' num2str(max(pSpace)) ]); end
+    if SAVEIT; mlf.saveGIF(handler,ii,['ex_rnd_eval_' num2str(2) '_min' num2str(min(pSpace)) 'max' num2str(max(pSpace)) ]); end
 end
 
