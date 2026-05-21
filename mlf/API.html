@@ -32,23 +32,98 @@
 										<li><a href="https://github.com/cpoussot/mLF" target="_blank"><span class="label">GitHub</span></a></li>										
 									</ul>
 								</header>
-								<!-- Banner -->
+								<!-- Alg1 -->
 								<section id="banner">
 									<div class="content">
 										<h2>API (function list)</h2>
-										<!-- main-->
-										<h3>Main functions</h3>
-										<p>
-											
-										</p>
-										<!-- second-->
-										<h3>Secondary functions</h3>
-										<p>
-											
-										</p>
-									
+										<h3>Main function: mlf.alg1</h3>
+										<b>Description</b><br>
+										Constructs a rational approximant (in the barycentrig form) following the direct method (Algorithm 1), directly from data using:
+<pre class="default prettyprint prettyprinted" style=""><code>[g,iloe] = mlf.alg1(tab,p_c,p_r{,opt});</code></pre>
+										<b>Inputs arguments</b><br>
+										<ul>
+											<li><code>tab</code>: $n$-dimensional matrix array (tensor) of dimension $(k_1+q_1)\times \cdots \times (k_n+q_n)$, with double entries (complex or real). It denotes the $n$-dimensional tensor $\mathbf{tab}_n$ or $\mathcal T_n^{\otimes}$.
+											</li>
+											<li><code>p_c</code>: $n$-dimensional cell, where each entry $l=1,\cdots,n$ is a vectors of dimension $1\times k_l$ with double entries (complex or real). It denotes the column interpolation points $P_c^{(n)}$.
+											</li> 
+											<li><code>p_r</code>: $n$-dimensional cell, where each entry $l=1,\cdots,n$ is a vectors of dimension $1\times q_l$ with double entries (complex or real). It denotes the row interpolation points $P_r^{(n)}$.
+											</li>
+										</ul>
+										<b>Outputs arguments</b><br>
+										<ul>
+											<li><code>g</code>: handle function, reproducing the rational approximatant
+												$$
+												g(x_{1},\cdots,x_{n}) =
+												\dfrac{\sum_{j_1=1}^{k_1}\cdots\sum_{j_n=1}^{k_n}\dfrac{c(j_1,\cdots,j_n)w(j_1,\cdots,j_n)}{(x_{1}-\lambda_{1}(j_1))\cdots(x_{n}-\lambda_{n}(j_n2))}}{\sum_{j_1=1}^{k_1}\cdots\sum_{j_n=1}^{k_n} \dfrac{c(j_1,\cdots,j_n)}{(x_{1}-\lambda_{1}(j_1))\cdots(x_{n}-\lambda_{n}(j_n))}}
+												$$
+											</li>
+											<li><code>iloe</code>: structure information fields.</li>
+										</ul>
+										<b>Optional arguments</b> <code>opt</code>, structure with the following fields:<br>
+										<ul>
+											<li><code>method</code>: string defining the method used: <code>'rec'</code> for recursive (default) or <code>'full'</code> for full Loewner nullspace computation.</li>
+											<li><code>method_null</code>: string defining the nullspace computation method used: <code>'svd'</code> for SVD (default), <code>'qr'</code> for QR or <code>'mldivide'</code> for linear equation resolution.</li>
+											<li><code>ord_tol</code>: positive double $< 1$ defining the relative singular value threshold in the single variable order dertection.</li>
+											<li><code>ord_obj</code>: vector of dimension $1 \times n$ with positive integer entries defining the order along ench variables; <code>[]</code> or <code>inf*ones(1,n)</code> (default).</li>
+											<li><code>ord_N</code>: vector of dimension $1 \times n$ with positive interger entries defining the number of univariate 1-D Loewner matrix computation used to estimate the order along each variable; <code>5*ones(1,n)</code> (default).</li>
+											<li><code>ord_show</code>: logical used to display the 1-D normalized singular value decay and order selection; <code>false</code> (default).</li>
+											<li><code>data_min</code>: logical used to use minimal number of values; <code>false</code> (default).</li>
+										</ul>									
 									</div>
 								</section>
+								<!-- Tensor construction -->
+								<section id="banner">
+									<div class="content">
+									<h3>Tensor construction: mlf.make_tab_vec & mlf.vec2mat</h3>
+									<b>Description</b><br>
+									Constructs a rational approximant (in the barycentrig form) following the direct method (Algorithm 1) , directly from data using:
+<pre class="default prettyprint prettyprinted" style=""><code>[y,x,dim] = mlf.make_tab_vec(H,p_c,p_r);
+tab       = mlf.vec2mat(y,dim);
+</code></pre>
+									<b>Inputs arguments</b><br>
+									<ul>
+										<li><code>H</code>: $n$-dimensional handle function of the type <code>H=@(x) x(:,1) + x(:,2)</code>.
+										</li>
+										<li><code>p_c</code>: $n$-dimensional cell, where each entry $l=1,\cdots,n$ is a vectors of dimension $1\times k_l$ with double entries (complex or real). It denotes the column interpolation points $P_c^{(n)}$.
+										</li> 
+										<li><code>p_r</code>: $n$-dimensional cell, where each entry $l=1,\cdots,n$ is a vectors of dimension $1\times q_l$ with double entries (complex or real). It denotes the row interpolation points $P_r^{(n)}$.
+										</li>
+									</ul>
+									<b>Output arguments</b><br>
+									<ul>
+										<li><code>y</code>: vector $N\times 1$ with double entries, defining the output of all combinations of interpolation points ($N=k_1q_1\cdots k_nq_n$).
+										</li>
+										<li><code>x</code>: vector $N\times n$ with double entries, defining the interpolation points combinations.
+										</li> 
+										<li><code>dim</code>: vector $1\times n$, where each integer entry $l=1,\cdots,n$ is the dimension $k_lq_l$ along the $l$-th variable.
+										</li>
+									</ul>
+									</div>
+								</section>
+
+								<!-- Decoupling -->
+								<section id="banner">
+									<div class="content">
+									<h3>Decoupling: mlf.decoupling</h3>
+									<b>Description</b><br>
+									Constructs the univariate vector functions achieving the decoupling as in the Kolmogorov superposition theorem, directly from information data comming from the th recursive computation:
+<pre class="default prettyprint prettyprinted" style=""><code>[Bary,Lag,Cx] = mlf.decoupling(iloe);</code></pre>
+									<b>Inputs arguments</b><br>
+									<ul>
+										<li><code>iloe</code>: structure information field, given by <code>mlf.alg1</code> if <code>opt.method='rec'</code> is selected.</li>
+									</ul>
+									<b>Output arguments</b><br>
+									<ul>
+										<li><code>Bary</code>: vector $N\times 1$ with double entries, defining the output of all combinations of interpolation points ($N=k_1q_1\cdots k_nq_n$).
+										</li>
+										<li><code>Lag</code>: vector $N\times n$ with double entries, defining the interpolation points combinations.
+										</li> 
+										<li><code>Cx</code>: vector $1\times n$, where each integer entry $l=1,\cdots,n$ is the dimension $k_lq_l$ along the $l$-th variable.
+										</li>
+									</ul>
+									</div>
+								</section>
+
 								<ul class="contact">
 									<li class="icon solid fa-envelope">
 										<a href="mailto:charles.poussot-vassal@onera.fr">charles.poussot-vassal [at] onera.fr </a> 
