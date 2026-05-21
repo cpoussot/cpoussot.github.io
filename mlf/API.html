@@ -104,7 +104,7 @@ tab       = mlf.vec2mat(y,dim);
 								<!-- Decoupling -->
 								<section id="banner">
 									<div class="content">
-									<h3>Decoupling: mlf.decoupling</h3>
+									<h3>Decoupling: mlf.decoupling (needs symbolic toolbox)</h3>
 									<b>Description</b><br>
 									Constructs the univariate vector functions achieving the decoupling as in the Kolmogorov superposition theorem, directly from information data comming from the th recursive computation:
 <pre class="default prettyprint prettyprinted" style=""><code>[Bary,Lag,Cx] = mlf.decoupling(iloe);</code></pre>
@@ -114,11 +114,9 @@ tab       = mlf.vec2mat(y,dim);
 									</ul>
 									<b>Output arguments</b><br>
 									<ul>
-										<li><code>Bary</code>: vector $N\times 1$ with double entries, defining the output of all combinations of interpolation points ($N=k_1q_1\cdots k_nq_n$).
-										</li>
-										<li><code>Lag</code>: vector $N\times n$ with double entries, defining the interpolation points combinations.
-										</li> 
-										<li><code>Cx</code>: vector $1\times n$, where each integer entry $l=1,\cdots,n$ is the dimension $k_lq_l$ along the $l$-th variable.
+										<li><code>Bary</code>: cell $1\times n$, each embedding a vector of the univariate barcentric weights.</li>
+										<li><code>Lag</code>: cell $1\times n$, each embedding a vector of the univariate Lagrangian basis.</li> 
+										<li><code>Cx</code>: structure including the recursive interpolation points and nullspaces.
 										</li>
 									</ul>
 									</div>
