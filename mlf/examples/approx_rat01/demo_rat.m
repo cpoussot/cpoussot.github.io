@@ -17,8 +17,8 @@ opt.ord_show    = true;  % show order detection step
 drawnow, mlf.figSavePNG('svd',.5), pause(.5)
 %%% Loewner matrix
 tabr        = iloe.tabr;
-W           = tabr(1:iloe.ord+1,1:iloe.ord+1);
-V           = tabr(iloe.ord+2:end,iloe.ord+2:end);
+W           = tabr(1:iloe.ord(1)+1,1:iloe.ord(2)+1);
+V           = tabr(iloe.ord(1)+2:end,iloe.ord(2)+2:end);
 LL          = mlf.loewnerMatrix(iloe.pc,iloe.pr,W,V);
 norm(LL*iloe.c)
 % opt.method      = 'full';  % full or recursive method
