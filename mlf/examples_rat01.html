@@ -97,8 +97,8 @@ $$
 $$
 To this end one can compute the Loewner matrix and verify its kernel as follows.
 <pre class="default prettyprint prettyprinted" style=""><code>tabr        = iloe.tabr;
-W           = tabr(1:iloe.ord+1,1:iloe.ord+1);
-V           = tabr(iloe.ord+2:end,iloe.ord+2:end);
+W           = tabr(1:iloe.ord(1)+1,1:iloe.ord(2)+1);
+V           = tabr(iloe.ord(1)+2:end,iloe.ord(2)+2:end);
 LL          = mlf.loewnerMatrix(iloe.pc,iloe.pr,W,V);
 norm(LL*iloe.c)
 </code></pre>
