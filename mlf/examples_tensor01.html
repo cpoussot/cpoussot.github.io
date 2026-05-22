@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>mLF - multivariate Loewner Framework</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-svg.js"></script>
+		<script>MathJax = {
+			  tex: {
+				inlineMath: {'[+]': [['$', '$']]}
+			  },
+			  svg: {
+				fontCache: 'global'
+			  }
+			};
+		</script>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<!-- Header -->
+								<header id="header">
+									<a href="index.html" class="logo"><strong>multivariate Loewner Framework</strong></a>
+									<ul class="icons">
+										<li><a href="https://github.com/cpoussot/mLF" target="_blank"><span class="label">GitHub</span></a></li>										
+									</ul>
+								</header>
+								<!-- Banner -->
+								<section id="banner">
+									<div class="content">
+										<h2>Tensor example</h2>
+<!-- mLF download -->
+<h3>Define a tensor based on an irrational function, disturbed by a random number</h3>
+Start by defining your model <code>H</code> 
+$$
+H(x_1,x_2) =   \frac{5x_2^2}{2+\sin(4x_1)+x_2^4} (1+r),
+$$
+where $r\in[-0.075,+0.075]$ is a random number.
+<pre class="default prettyprint prettyprinted" style=""><code>%%% Tensor model generation
+H   = @(x) 5*x(:,2).^2./(2+sin(4*x(:,1))+x(:,2).^4);
+n   = 2;
+ip  = {linspace(-pi,1,60) linspace(-1,2,50)};
+%%% Column/Row
+for i = 1:n
+	p_c{i} = ip{i}(2:2:end);
+	p_r{i} = ip{i}(1:2:end);
+end
+%%% Data tensor/rand
+[y,x,dim]   = mlf.make_tab_vec(H,p_c,p_r);
+y           = y.*(1+.075*(rand(length(y),1)-.5));
+tab         = mlf.vec2mat(y,dim);
+</code></pre>
+
+Then, the tensorized data <code>tab</code> are constructed. Here leading to a 2-D tensor, and more specifically
+$$
+\mathcal T_2^{\otimes} \in \mathbb R^{60\times 50}
+$$
+
+<h3>Use the mLF (Alg. 1: direct [A/G/P-V, 2025])</h3>
+Now we are ready to build the approximation. 
+The <code>opt.method</code> is used to select either the recursive (<code>'rec'</code>) or full (<code>'full'</code>) method. 
+Here  the latter is used and results in better results (still to be understood).
+The <code>opt.data_min</code> is used to use all data in the null-scapce computation (requires more CPU but may result in a least square averaging).
+<pre class="default prettyprint prettyprinted" style=""><code>opt.method_null = 'svd0'; % null space method
+opt.method      = 'full'; % full or recursive method
+opt.ord_show    = true;   % show order detection step
+opt.ord_obj     = [6 4];  % set objective orders
+opt.data_min    = false;  % use all the data
+</code></pre>
+Notice that, due to noise, the singular values decay along the both variables is very slow and truncation is hard to detects.
+However, regarding the first one $x_1$, a decay around 6 is visible. Regarding $x_2$, same remark for 4 holds. 
+Playing with <code>opt.ord_obj</code> allows to adjust this.
+<div style="text-align: center;">
+	<img src="examples/approx_tensor01/svd.png" width="60%"></a><br>
+	Normalized singular values of some of the single variable Loewner matrices.<br>
+</div>
+
+<h3>Evaluate the resulting approximate</h3>
+Now we compare the original data and approximate functions. 
+The below figure compares the original data <code>tab</code> and approximate <code>g</code> functions along $x_1$ and $x_2$. 
+The frames show the value (left) and the mismatch (right).
+<div style="text-align: center;">
+	<img src="examples/approx_tensor01/eval.png" width="80%"></a><br>
+</div>
+									</div>
+								</section>
+								<ul class="contact">
+									<li class="icon solid fa-envelope">
+										<a href="mailto:charles.poussot-vassal@onera.fr">charles.poussot-vassal [at] onera.fr </a> 
+									</li>
+								</ul>
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+				<!-- <div w3-include-html="content.html"></div> -->
+				<div id="sidebar">
+					<div class="inner">
+						<!-- Menu -->
+						<nav id="menu">
+							<header class="major">
+								<h2>Menu</h2>
+							</header>
+							<ul>
+								<li><a href="./index.html">mLF in a nushell</a></li>
+								<li><a href="./gettingstarted.html">Getting started</a></li>
+								<li><a href="./API.html">API</a></li>
+								<li><a href="./examples.html">Examples</a></li>
+								<li><a href="./community.html">Loewner community</a></li>
+								<ul>
+									<li><a href="./loewner.html">Get familiar with Loewner</a></li>
+									<li><a href="./references.html">References</a></li>
+								</ul>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+
+			<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/include.js"></script>
+		</body>
+</html>
