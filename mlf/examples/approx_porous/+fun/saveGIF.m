@@ -5,6 +5,6 @@ function saveGIF(handler,out,name)
     if out == 1
         imwrite(IND,map,[name '.gif'],'gif','LoopCount',Inf); 
     else
-        imwrite(IND,map,[name '.gif'],'gif','WriteMode','append','DelayTime',.5); 
+        imwrite(IND,map,[name '.gif'],'gif','WriteMode','append','DelayTime',.1); 
     end
 end

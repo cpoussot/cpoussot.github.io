@@ -28,6 +28,29 @@ porosity            = linspace(porosity_bnd(1),porosity_bnd(2),10);
 pore_mean_size      = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),20);
 pore_standard_dev   = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),20);
 
+%%% Functions, ip
+ip{1,1} = omega;
+ip{2,1} = porosity;
+ip{3,1} = pore_mean_size;
+ip{4,1} = pore_standard_dev;
+ii      = 1;
+% % iR => conj()
+% i1      = 2;
+% p_c{1}  = -1i*omega(2:2:end);
+% p_r{1}  = -1i*omega(1:2:end);
+% p_c{1}  = sort([p_c{1} conj(p_c{1})]);
+% p_r{1}  = sort([p_r{1} conj(p_r{1})]);
+% ip{1}   = [p_c{1} p_r{1}];
+% R
+%%% Data tensor
+n = length(ip);
+for ii = ii:n
+    p_c{ii} = ip{ii}(2:2:end);
+    p_r{ii} = ip{ii}(1:2:end);
+end
+[y,x,dim]   = mlf.make_tab_vec(H,p_c,p_r);
+tab         = mlf.vec2mat(y,dim);
+
 switch CAS
     case 1
         H       = @(x) fun.dynamic_viscous_tortuosity(x(:,1), x(:,2), x(:,3), x(:,4));
@@ -53,29 +76,6 @@ switch CAS
     %     %ord_tol = 1e-9;
     %     ord_obj = [13 1 6 5];
 end
-
-%%% Functions, ip
-ip{1,1} = omega;
-ip{2,1} = porosity;
-ip{3,1} = pore_mean_size;
-ip{4,1} = pore_standard_dev;
-ii      = 1;
-% % iR => conj()
-% i1      = 2;
-% p_c{1}  = -1i*omega(2:2:end);
-% p_r{1}  = -1i*omega(1:2:end);
-% p_c{1}  = sort([p_c{1} conj(p_c{1})]);
-% p_r{1}  = sort([p_r{1} conj(p_r{1})]);
-% ip{1}   = [p_c{1} p_r{1}];
-% R
-%%% Data tensor
-n = length(ip);
-for ii = ii:n
-    p_c{ii} = ip{ii}(2:2:end);
-    p_r{ii} = ip{ii}(1:2:end);
-end
-[y,x,dim]   = mlf.make_tab_vec(H,p_c,p_r);
-tab         = mlf.vec2mat(y,dim);
 
 %%% Alg. 1: direct pLoe [A/G/P-V, 2025]
 opt = [];
