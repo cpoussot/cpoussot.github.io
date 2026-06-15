@@ -4,12 +4,14 @@ syms s1 s2
 dt1     = .01;
 dt2     = dt1/2;%2;
 Hsym    = s2/(exp(dt1*s1)^2-1/2) + ...
-           1/(exp(dt2*s1)+1/3);
+           1/(exp(dt2*s1)+1/3*s2);
 H       = matlabFunction(Hsym);
 H       = @(x) H(x(:,1),x(:,2));
+Hz      = @(p) tf(p,[1 0 -1/2],dt1) + ...
+               tf(1,[1 1/3*p],dt1);
 %%% Define IP
 ip{1}   = linspace(1e-3,pi/dt1,20);
-ip{2}   = linspace(1e-2,1,10);
+ip{2}   = linspace(-1,1,10);
 n       = numel(ip);
 %%% Split IP and build tensor
 for i = 1:n
@@ -23,7 +25,7 @@ tab         = mlf.vec2mat(y,dim);
 opt.ord_tol     = 1e-8;  % SVD tolerance
 opt.method_null = 'svd'; % null space method
 opt.method      = 'rec'; % full or recursive method
-opt.ord_show    = false;  % show order detection step
+opt.ord_show    = false; % show order detection step
 [glag,imlf]     = mlf.alg1(tab,p_c,p_r,opt);
 %%% Monomial real
 opt_real.s_gam  = 1;
@@ -36,11 +38,11 @@ opt_real.s_del  = 2;
 Phir0p          = subs(imon_red.Phi_s,'s1',0);
 Phir1p          = subs(imon_red.Phi_s,'s1',1);
 Er              = double(Phir1p-Phir0p);
-%Ar              = matlabFunction(-Phir0p);
-Ar              = double(-Phir0p);
+Ar              = matlabFunction(-Phir0p);
+%Ar              = double(-Phir0p);
 Br              = double(imon_red.Gr);
 Cr              = @(p) double(imon_red.Wr(0,p));%matlabFunction()
-Gss             = @(p) dss(Ar,Br,Cr(p),0,Er);
+Gss             = @(p) dss(Ar(p),Br,Cr(p),0,Er);
 vpa(imon_red.Phi_s,2)
 vpa(Phir0p,2)
 vpa(Phir1p,2)
@@ -53,7 +55,6 @@ vpa(Phir1p,2)
 % Hkst            = simplify(num/den);
 % vpa(Hkst,3)
 %
-Hz = @(p) tf(p,[1 0 -1/2],dt1)+tf(1,[1 1/3],dt1) 
 pSpan = linspace(min(ip{2}),max(ip{2}),10)+rand(1)/10;
 tSpan_s = 0:dt1:.1;
 for i = 1:numel(pSpan)
