@@ -1,11 +1,10 @@
 function alpha_dyn = dynamic_viscous_tortuosity(omega, porosity, pore_mean_size, pore_standard_dev)
-    nu=1.5e-5;
-
-    tortuosity = exp(4.*(pore_standard_dev.*log(2)).^2);
-    k0 = porosity.*pore_mean_size.^2./(8.*tortuosity) .* exp(-6*(pore_standard_dev.*log(2)).^2);    
-    viscous_length = pore_mean_size .* exp(-5/2.*(pore_standard_dev.*log(2)).^2);
-
-    c_infty = tortuosity./porosity;
+    
+    nu              = 1.5e-5;
+    tortuosity      = exp(4.*(pore_standard_dev.*log(2)).^2);
+    k0              = porosity.*pore_mean_size.^2./(8.*tortuosity) .* exp(-6*(pore_standard_dev.*log(2)).^2);    
+    viscous_length  = pore_mean_size .* exp(-5/2.*(pore_standard_dev.*log(2)).^2);
+    c_infty         = tortuosity./porosity;
 
     % JCAL
     M = nu.*porosity ./ (k0.*tortuosity);

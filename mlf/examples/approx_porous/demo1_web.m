@@ -17,7 +17,7 @@ porosity_bnd            = [.6 .99];
 pore_mean_size_bnd      = [1e-6 1e-2];
 pore_standard_dev_bnd   = [0 .5];
 %%% Interpolation points
-ip{1,1} = 2*pi*logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),50);
+ip{1,1} = logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),50);
 ip{2,1} = linspace(porosity_bnd(1),porosity_bnd(2),10);
 ip{3,1} = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),20);
 ip{4,1} = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),20);
@@ -36,6 +36,33 @@ tab_alpha   = mlf.vec2mat(y,dim);
 tab_beta    = mlf.vec2mat(y,dim);
 
 %%
+ZAref   = @(x) fun.impedence_abs(H_alpha,H_beta, x(:,1), x(:,2), x(:,3), x(:,4));
+omega   = logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),100)*(1+rand(1)/50);
+
+N   = [1e4 3 1 1];
+x1  = logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),N(1))*(1+rand(1)/50);
+x2  = linspace(porosity_bnd(1),porosity_bnd(2),N(2))*(1+rand(1)/50);
+x3  = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),N(3))*(1+rand(1)/50);
+x4  = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),N(4))*(1+rand(1)/50);
+k = 0;
+figure, hold on
+for i4 = 1:length(x4)
+    for i3 = 1:length(x3)
+        for jj = 1:numel(x2)
+            for ii = 1:length(x1)
+                tab_ref(ii,:) = ZAref([1i*x1(ii) x2(jj) x3(i3) x4(i4)]);
+            end
+            plot(x1,tab_ref(:,2))
+            set(gca,'XScale','log')
+            %ylim([-1 1])
+            drawnow
+
+        end
+    end
+end
+%tab_app = ZAapp(p);
+
+%%
 %%% Alg. 1: direct pLoe [A/G/P-V, 2025]
 opt.method_null = 'svd0';
 opt.method      = 'full';
@@ -49,11 +76,11 @@ titre_beta      = ['mLF alg. 1, $r=[' regexprep(num2str(imlf.ord),'\s*',',') ']$
 
 %%
 H = H_alpha; r = r_alpha; titre = titre_alpha; name = 'alpha';
-%H = H_beta;  r = r_beta; titre = titre_beta; name = 'beta';
+H = H_beta;  r = r_beta; titre = titre_beta; name = 'beta';
 
 %%% Plot some results
 N   = [51 50 20 3];
-x1  = 2*pi*logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),N(1))*(1+rand(1)/50);
+x1  = logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),N(1))*(1+rand(1)/50);
 x2  = linspace(porosity_bnd(1),porosity_bnd(2),N(2))*(1+rand(1)/50);
 x3  = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),N(3))*(1+rand(1)/50);
 x4  = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),N(4))*(1+rand(1)/50);
@@ -125,4 +152,30 @@ for i4 = 1:length(x4)
         kk = kk + 1; fun.saveGIF(h,kk,name)
     end
 end
+%%
+ZAapp = @(x) fun.impedence_abs(r_alpha,r_beta, x(:,1), x(:,2), x(:,3), x(:,4));
 
+N   = [1e3 3 1 1];
+x1  = logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),N(1))*(1+rand(1)/50);
+x2  = linspace(porosity_bnd(1),porosity_bnd(2),N(2))*(1+rand(1)/50);
+x3  = mean(pore_mean_size_bnd);
+x4  = mean(pore_standard_dev_bnd);
+
+figure, hold on, grid on, axis tight
+for i4 = 1:length(x4)
+    for i3 = 1:length(x3)
+        for jj = 1:numel(x2)
+            for ii = 1:length(x1)
+                Abs_ref(ii,:) = ZAref([1i*x1(ii) x2(jj) x3(i3) x4(i4)]);
+                Abs_app(ii,:) = ZAapp([1i*x1(ii) x2(jj) x3(i3) x4(i4)]);
+            end
+            plot(x1,Abs_ref(:,2))
+            plot(x1,Abs_app(:,2),'k--')
+            set(gca,'XScale','log')
+            xlabel('Frequency [rad/s]')
+            %ylim([-1 1])
+            drawnow
+            pause
+        end
+    end
+end

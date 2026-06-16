@@ -46,7 +46,7 @@ $$
 \end{array}
 $$
 where, $S_2 =\left(\sigma_r\log_{10}2\right)^2$ and 
-where $\omega\in2\pi[10^{-2},10^8]$ is the frequency [Hz], $\sigma_r\in[0.6,0.99]$ is the porosity, $\phi\in[10^{-6}, 10^{-2}]$ is the pore mean size and $\overline{r}\in[0,0.5]$ is the pore standard deviation.
+where $\omega\in[10^{-2},10^8]$ is the frequency [Hz], $\sigma_r\in[0.6,0.99]$ is the porosity, $\phi\in[10^{-6}, 10^{-2}]$ is the pore mean size and $\overline{r}\in[0,0.5]$ is the pore standard deviation.
 The functions are given in Matlab form <a href="examples/approx_porous/+fun.zip">here</a>.
 <pre class="default prettyprint prettyprinted" style=""><code>%%% Bounds
 freq_bnd                = [1e-2 1e8];
@@ -54,7 +54,7 @@ porosity_bnd            = [.6 .99];
 pore_mean_size_bnd      = [1e-6 1e-2];
 pore_standard_dev_bnd   = [0 .5];
 %%% Interpolation points
-ip{1,1} = 2*pi*logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),50);
+ip{1,1} = logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),50);
 ip{2,1} = linspace(porosity_bnd(1),porosity_bnd(2),10);
 ip{3,1} = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),20);
 ip{4,1} = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),20);
