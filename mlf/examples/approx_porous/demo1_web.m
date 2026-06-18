@@ -12,12 +12,12 @@ VIEW    = [-160,40];
 CAS     = 1;
 FSZ     = 16;
 %%% Bounds
-freq_bnd                = [1e-2 1e8];
+w_bnd                   = [1e-2 1e8];
 porosity_bnd            = [.6 .99];
 pore_mean_size_bnd      = [1e-6 1e-2];
 pore_standard_dev_bnd   = [0 .5];
 %%% Interpolation points
-ip{1,1} = logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),50);
+ip{1,1} = logspace(log10(w_bnd(1)),log10(w_bnd(2)),50);
 ip{2,1} = linspace(porosity_bnd(1),porosity_bnd(2),10);
 ip{3,1} = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),20);
 ip{4,1} = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),20);
@@ -35,34 +35,35 @@ tab_alpha   = mlf.vec2mat(y,dim);
 [y,x,dim]   = mlf.make_tab_vec(H_beta,p_c,p_r);
 tab_beta    = mlf.vec2mat(y,dim);
 
-%%
-ZAref   = @(x) fun.impedence_abs(H_alpha,H_beta, x(:,1), x(:,2), x(:,3), x(:,4));
-omega   = logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),100)*(1+rand(1)/50);
+% N   = [1e4 3 1 1];
+% x1  = logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),N(1))*(1+rand(1)/50);
+% x2  = 0.7;%linspace(porosity_bnd(1),porosity_bnd(2),N(2))*(1-rand(1)/50);
+% x3  = [1e-4 5e-4 1e-3];%logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),N(3))*(1+rand(1)/50);
+% x4  = .1;%linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),N(4))*(1+rand(1)/50);
+% k = 0;
+% figure, hold on
+% for i4 = 1:length(x4)
+%     for i3 = 1:length(x3)
+%         for jj = 1:numel(x2)
+%             for ii = 1:length(x1)
+%                 tab_ref(ii,:) = ZAref([1i*x1(ii) x2(jj) x3(i3) x4(i4)]);
+%             end
+%             %plot(x1,tab_ref(:,2))
+%             subplot(211), hold on
+%             plot(x1,real(tab_ref(:,1)))
+%             set(gca,'XScale','log')
+%             %xlim([20 20000])
+%             subplot(212), hold on
+%             plot(x1,imag(tab_ref(:,1)))
+%             set(gca,'XScale','log')%,'YScale','log')
+%             %ylim([-1 1]*20)
+%             %xlim([20 20000])
+%             drawnow
+%         end
+%     end
+% end
+% %tab_app = ZAapp(p);
 
-N   = [1e4 3 1 1];
-x1  = logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),N(1))*(1+rand(1)/50);
-x2  = linspace(porosity_bnd(1),porosity_bnd(2),N(2))*(1+rand(1)/50);
-x3  = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),N(3))*(1+rand(1)/50);
-x4  = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),N(4))*(1+rand(1)/50);
-k = 0;
-figure, hold on
-for i4 = 1:length(x4)
-    for i3 = 1:length(x3)
-        for jj = 1:numel(x2)
-            for ii = 1:length(x1)
-                tab_ref(ii,:) = ZAref([1i*x1(ii) x2(jj) x3(i3) x4(i4)]);
-            end
-            plot(x1,tab_ref(:,2))
-            set(gca,'XScale','log')
-            %ylim([-1 1])
-            drawnow
-
-        end
-    end
-end
-%tab_app = ZAapp(p);
-
-%%
 %%% Alg. 1: direct pLoe [A/G/P-V, 2025]
 opt.method_null = 'svd0';
 opt.method      = 'full';
@@ -76,11 +77,11 @@ titre_beta      = ['mLF alg. 1, $r=[' regexprep(num2str(imlf.ord),'\s*',',') ']$
 
 %%
 H = H_alpha; r = r_alpha; titre = titre_alpha; name = 'alpha';
-H = H_beta;  r = r_beta; titre = titre_beta; name = 'beta';
+%H = H_beta;  r = r_beta; titre = titre_beta; name = 'beta';
 
 %%% Plot some results
 N   = [51 50 20 3];
-x1  = logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),N(1))*(1+rand(1)/50);
+x1  = logspace(log10(w_bnd(1)),log10(w_bnd(2)),N(1))*(1+rand(1)/50);
 x2  = linspace(porosity_bnd(1),porosity_bnd(2),N(2))*(1+rand(1)/50);
 x3  = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),N(3))*(1+rand(1)/50);
 x4  = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),N(4))*(1+rand(1)/50);
@@ -115,6 +116,7 @@ for i4 = 1:length(x4)
         ylabel(x2label,'Interpreter','latex')
         zlabel('Real(.)','Interpreter','latex')
         set(gca,'XScale','log'); 
+        legend({'Rational approximation' 'Original model'},'Location','NorthWest')
         title(titre,'Interpreter','latex')
         axis tight, view(VIEW(1),VIEW(2))
         %zlim([min(tab_refR(:)) max(tab_refR(:))])
@@ -153,29 +155,34 @@ for i4 = 1:length(x4)
     end
 end
 %%
-ZAapp = @(x) fun.impedence_abs(r_alpha,r_beta, x(:,1), x(:,2), x(:,3), x(:,4));
+ZAref   = @(x) fun.impedence_abs(H_alpha,H_beta, x(:,1), x(:,2), x(:,3), x(:,4));
+ZAapp   = @(x) fun.impedence_abs(r_alpha,r_beta, x(:,1), x(:,2), x(:,3), x(:,4));
 
-N   = [1e3 3 1 1];
-x1  = logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),N(1))*(1+rand(1)/50);
-x2  = linspace(porosity_bnd(1),porosity_bnd(2),N(2))*(1+rand(1)/50);
-x3  = mean(pore_mean_size_bnd);
-x4  = mean(pore_standard_dev_bnd);
-
-figure, hold on, grid on, axis tight
+x1      = logspace(log10(w_bnd(1)),log10(w_bnd(2)),1e4)*(1+rand(1)/50);
+x2      = 0.7;
+x3      = logspace(-6,-3,20)*(1+rand(1)/100);
+x4      = .1;
+kk      = 0;
+col     = hsv(5);
+h=figure('Color','white'), hold on, grid on, axis tight
 for i4 = 1:length(x4)
     for i3 = 1:length(x3)
-        for jj = 1:numel(x2)
-            for ii = 1:length(x1)
-                Abs_ref(ii,:) = ZAref([1i*x1(ii) x2(jj) x3(i3) x4(i4)]);
-                Abs_app(ii,:) = ZAapp([1i*x1(ii) x2(jj) x3(i3) x4(i4)]);
+        for i2 = 1:numel(x2)
+            for i1 = 1:length(x1)
+                Abs_ref(i1,:) = ZAref([1i*x1(i1) x2(i2) x3(i3) x4(i4)]);
+                Abs_app(i1,:) = ZAapp([1i*x1(i1) x2(i2) x3(i3) x4(i4)]);
             end
-            plot(x1,Abs_ref(:,2))
-            plot(x1,Abs_app(:,2),'k--')
+            cla
+            h1=plot(x1,Abs_ref(:,2),'LineWidth',3);%,'Color',col(kk,:));
+            h2=plot(x1,Abs_app(:,2),'k--','LineWidth',3);
             set(gca,'XScale','log')
             xlabel('Frequency [rad/s]')
-            %ylim([-1 1])
+            ylabel('Absorption coefficient')
+            ylim([0 1])
+            title(['$\{\sigma_r,\phi,\overline{r}\}=\{' num2str(x2(i2),2) ',' num2str(x3(i3),2) ',' num2str(x4(i4),2) '\}$'])
+            legend({'Original model' 'Rational approximation'},'Location','west')
             drawnow
-            pause
+            kk = kk + 1; fun.saveGIF(h,kk,'absorption')
         end
     end
 end
