@@ -160,7 +160,7 @@ ZAapp   = @(x) fun.impedence_abs(r_alpha,r_beta, x(:,1), x(:,2), x(:,3), x(:,4))
 
 x1      = logspace(log10(w_bnd(1)),log10(w_bnd(2)),1e4)*(1+rand(1)/50);
 x2      = 0.7;
-x3      = logspace(-6,-3,20)*(1+rand(1)/100);
+x3      = logspace(-6,-3,40)*(1+rand(1)/100);
 x4      = .1;
 kk      = 0;
 col     = hsv(5);
@@ -182,7 +182,7 @@ for i4 = 1:length(x4)
             title(['$\{\sigma_r,\phi,\overline{r}\}=\{' num2str(x2(i2),2) ',' num2str(x3(i3),2) ',' num2str(x4(i4),2) '\}$'])
             legend({'Original model' 'Rational approximation'},'Location','west')
             drawnow
-            kk = kk + 1; fun.saveGIF(h,kk,'absorption')
+            kk = kk + 1; fun.saveGIF(h,kk,'absorption',.2)
         end
     end
 end
