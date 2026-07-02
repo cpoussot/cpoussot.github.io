@@ -17,7 +17,7 @@ porosity_bnd            = [.6 .99];
 pore_mean_size_bnd      = [1e-6 1e-2];
 pore_standard_dev_bnd   = [0 .5];
 %%% Interpolation points
-ip{1,1} = logspace(log10(w_bnd(1)),log10(w_bnd(2)),50);
+ip{1,1} = 1i*logspace(log10(w_bnd(1)),log10(w_bnd(2)),50);
 ip{2,1} = linspace(porosity_bnd(1),porosity_bnd(2),10);
 ip{3,1} = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),20);
 ip{4,1} = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),20);
@@ -34,36 +34,6 @@ H_beta  = @(x) fun.dynamic_thermal_compressibility(x(:,1), x(:,2), x(:,3), x(:,4
 tab_alpha   = mlf.vec2mat(y,dim);
 [y,x,dim]   = mlf.make_tab_vec(H_beta,p_c,p_r);
 tab_beta    = mlf.vec2mat(y,dim);
-
-% N   = [1e4 3 1 1];
-% x1  = logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),N(1))*(1+rand(1)/50);
-% x2  = 0.7;%linspace(porosity_bnd(1),porosity_bnd(2),N(2))*(1-rand(1)/50);
-% x3  = [1e-4 5e-4 1e-3];%logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),N(3))*(1+rand(1)/50);
-% x4  = .1;%linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),N(4))*(1+rand(1)/50);
-% k = 0;
-% figure, hold on
-% for i4 = 1:length(x4)
-%     for i3 = 1:length(x3)
-%         for jj = 1:numel(x2)
-%             for ii = 1:length(x1)
-%                 tab_ref(ii,:) = ZAref([1i*x1(ii) x2(jj) x3(i3) x4(i4)]);
-%             end
-%             %plot(x1,tab_ref(:,2))
-%             subplot(211), hold on
-%             plot(x1,real(tab_ref(:,1)))
-%             set(gca,'XScale','log')
-%             %xlim([20 20000])
-%             subplot(212), hold on
-%             plot(x1,imag(tab_ref(:,1)))
-%             set(gca,'XScale','log')%,'YScale','log')
-%             %ylim([-1 1]*20)
-%             %xlim([20 20000])
-%             drawnow
-%         end
-%     end
-% end
-% %tab_app = ZAapp(p);
-
 %%% Alg. 1: direct pLoe [A/G/P-V, 2025]
 opt.method_null = 'svd0';
 opt.method      = 'full';
@@ -77,7 +47,7 @@ titre_beta      = ['mLF alg. 1, $r=[' regexprep(num2str(imlf.ord),'\s*',',') ']$
 
 %%
 H = H_alpha; r = r_alpha; titre = titre_alpha; name = 'alpha';
-%H = H_beta;  r = r_beta; titre = titre_beta; name = 'beta';
+H = H_beta;  r = r_beta; titre = titre_beta; name = 'beta';
 
 %%% Plot some results
 N   = [51 50 20 3];
@@ -160,7 +130,7 @@ ZAapp   = @(x) fun.impedence_abs(r_alpha,r_beta, x(:,1), x(:,2), x(:,3), x(:,4))
 
 x1      = logspace(log10(w_bnd(1)),log10(w_bnd(2)),1e4)*(1+rand(1)/50);
 x2      = 0.7;
-x3      = logspace(-6,-3,40)*(1+rand(1)/100);
+x3      = logspace(log10(min(pore_mean_size_bnd)),log10(max(pore_mean_size_bnd)),40)*(1+rand(1)/100);
 x4      = .1;
 kk      = 0;
 col     = hsv(5);

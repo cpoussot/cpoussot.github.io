@@ -54,7 +54,7 @@ porosity_bnd            = [.6 .99];
 pore_mean_size_bnd      = [1e-6 1e-2];
 pore_standard_dev_bnd   = [0 .5];
 %%% Interpolation points
-ip{1,1} = logspace(log10(w_bnd(1)),log10(w_bnd(2)),50);
+ip{1,1} = 1i*logspace(log10(w_bnd(1)),log10(w_bnd(2)),50);
 ip{2,1} = linspace(porosity_bnd(1),porosity_bnd(2),10);
 ip{3,1} = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),20);
 ip{4,1} = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),20);
