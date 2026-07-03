@@ -11,111 +11,57 @@ addpath('/Users/charles/Documents/GIT/mlf')
 VIEW    = [-160,40];
 CAS     = 1;
 FSZ     = 16;
-%%% Environment parameters
-% Bounds
-freq_bnd                = [1e-2 1e8];
+%%% Bounds
+w_bnd                   = [1e-2 1e8];
 porosity_bnd            = [.6 .99];
 pore_mean_size_bnd      = [1e-6 1e-2];
 pore_standard_dev_bnd   = [0 .5];
-% Material parameters variables
-% omega               = 2*pi*logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),50);
-% porosity            = linspace(porosity_bnd(1),porosity_bnd(2),10);
-% pore_mean_size      = linspace(pore_mean_size_bnd(1),pore_mean_size_bnd(2),20);
-% pore_standard_dev   = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),20);
-
-omega               = 2*pi*logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),50);
-porosity            = linspace(porosity_bnd(1),porosity_bnd(2),10);
-pore_mean_size      = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),20);
-pore_standard_dev   = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),20);
-
-%%% Functions, ip
-ip{1,1} = omega;
-ip{2,1} = porosity;
-ip{3,1} = pore_mean_size;
-ip{4,1} = pore_standard_dev;
-ii      = 1;
-% % iR => conj()
-% i1      = 2;
-% p_c{1}  = -1i*omega(2:2:end);
-% p_r{1}  = -1i*omega(1:2:end);
-% p_c{1}  = sort([p_c{1} conj(p_c{1})]);
-% p_r{1}  = sort([p_r{1} conj(p_r{1})]);
-% ip{1}   = [p_c{1} p_r{1}];
-% R
-%%% Data tensor
+%%% Interpolation points
+ip{1,1} = 1i*logspace(log10(w_bnd(1)),log10(w_bnd(2)),50);
+ip{2,1} = linspace(porosity_bnd(1),porosity_bnd(2),10);
+ip{3,1} = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),20);
+ip{4,1} = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),20);
 n = length(ip);
-for ii = ii:n
+for ii = 1:n
     p_c{ii} = ip{ii}(2:2:end);
     p_r{ii} = ip{ii}(1:2:end);
 end
-[y,x,dim]   = mlf.make_tab_vec(H,p_c,p_r);
-tab         = mlf.vec2mat(y,dim);
-
-switch CAS
-    case 1
-        H       = @(x) fun.dynamic_viscous_tortuosity(x(:,1), x(:,2), x(:,3), x(:,4));
-        name    = 'alpha';
-        %
-        METH    = 'full';
-        ord_tol = 1e-9;
-        %ord_obj = [18 1 5 6];
-        ord_obj = [9 1 5 6];
-        %ord_obj = [18 inf inf inf];
-    case 2
-        H       = @(x) fun.dynamic_thermal_compressibility(x(:,1), x(:,2), x(:,3), x(:,4));
-        name    = 'beta';
-        %
-        METH    = 'full';
-        ord_tol = 1e-10;
-        ord_obj = [13 1 6 5];
-        ord_obj = [8 1 6 5];
-    % case 3
-    %     H       = @(x) fun.impedence_abs(x(:,1), x(:,2), x(:,3), x(:,4));
-    %     METH    = 'full';
-    %     ord_tol = 1e-5;
-    %     %ord_tol = 1e-9;
-    %     ord_obj = [13 1 6 5];
-end
-
+%%% Define the alpha and beta functions
+H_alpha = @(x) fun.dynamic_viscous_tortuosity(x(:,1), x(:,2), x(:,3), x(:,4));
+H_beta  = @(x) fun.dynamic_thermal_compressibility(x(:,1), x(:,2), x(:,3), x(:,4));
+%%% Data tensor
+[y,x,dim]   = mlf.make_tab_vec(H_alpha,p_c,p_r);
+tab_alpha   = mlf.vec2mat(y,dim);
+[y,x,dim]   = mlf.make_tab_vec(H_beta,p_c,p_r);
+tab_beta    = mlf.vec2mat(y,dim);
 %%% Alg. 1: direct pLoe [A/G/P-V, 2025]
-opt = [];
-tic;
 opt.method_null = 'svd0';
-opt.method      = METH;
-opt.ord_tol     = ord_tol;
-opt.ord_obj     = ord_obj;
-opt.ord_N       = 10;
-opt.ord_show    = true;
+opt.method      = 'full';
+opt.ord_obj     = [9 1 5 6];
 opt.data_min    = false;
-[r,imlf]        = mlf.alg1(tab,p_c,p_r,opt);
-if opt.ord_show; drawnow, mlf.figSavePDF(['svd_' num2str(CAS)],.5), pause(.5), end
-toc
-titre = ['mLF alg. 1, $r=[' regexprep(num2str(imlf.ord),'\s*',',') ']$'];
-save(name,'H','r')
+[r_alpha,imlf]  = mlf.alg1(tab_alpha,p_c,p_r,opt);
+titre_alpha     = ['mLF alg. 1, $r=[' regexprep(num2str(imlf.ord),'\s*',',') ']$']
+opt.ord_obj     = [8 1 6 5];
+[r_beta,imlf]   = mlf.alg1(tab_beta,p_c,p_r,opt);
+titre_beta      = ['mLF alg. 1, $r=[' regexprep(num2str(imlf.ord),'\s*',',') ']$']
 
-% %%% Realization Lagrangian
-% % Original
-% [Glag,ilagREAL] = mlf.make_realization_lag(imlf.pc,imlf.w,imlf.c,[]);
-% [Glag,ilagREAL] = mlf.make_realization_compressed(ilagREAL);
-% %%% Monomial real
-% opt_real        = [];
-% opt_real.s_gam  = 1;
-% opt_real.s_del  = 2:n;
-% [Gmon,imonREAL] = mlf.make_realization_compressed_mon(imlf.pc,imlf.w,imlf.c,opt_real);
 %%
-%r  = @(x) Glag(x(:,1),x(:,2),x(:,3),x(:,4));
+H = H_alpha; r = r_alpha; titre = titre_alpha; name = 'alpha';
+H = H_beta;  r = r_beta; titre = titre_beta; name = 'beta';
+
 %%% Plot some results
-N   = [51 50 20 4];
-x1  = 2*pi*logspace(log10(freq_bnd(1)),log10(freq_bnd(2)),N(1))*(1+rand(1)/50);
+N   = [51 50 20 3];
+x1  = logspace(log10(w_bnd(1)),log10(w_bnd(2)),N(1))*(1+rand(1)/50);
 x2  = linspace(porosity_bnd(1),porosity_bnd(2),N(2))*(1+rand(1)/50);
 x3  = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),N(3))*(1+rand(1)/50);
 x4  = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),N(4))*(1+rand(1)/50);
 
 %%%
 x1label = '$x_1=\omega$ [rad/s]';
-x2label = '$x_2=\phi$';
+x2label = '$x_2=\sigma_r$';
 [X,Y]   = meshgrid(x1,x2);
-h       = figure;
+h       = figure('Color','white');
+kk      = 0;
 for i4 = 1:length(x4)
     for i3 = 1:length(x3)
         for jj = 1:numel(x2)
@@ -140,6 +86,7 @@ for i4 = 1:length(x4)
         ylabel(x2label,'Interpreter','latex')
         zlabel('Real(.)','Interpreter','latex')
         set(gca,'XScale','log'); 
+        legend({'Rational approximation' 'Original model'},'Location','NorthWest')
         title(titre,'Interpreter','latex')
         axis tight, view(VIEW(1),VIEW(2))
         %zlim([min(tab_refR(:)) max(tab_refR(:))])
@@ -149,7 +96,7 @@ for i4 = 1:length(x4)
         xlabel(x1label,'Interpreter','latex')
         ylabel(x2label,'Interpreter','latex')
         set(gca,'XScale','log');
-        title('{\bf log}(abs. err.)/max.','Interpreter','latex')
+        title('{\bf log}(abs. err./max.)','Interpreter','latex')
         colorbar,
         %clim([-12 0])
         %
@@ -169,12 +116,43 @@ for i4 = 1:length(x4)
         xlabel(x1label,'Interpreter','latex')
         ylabel(x2label,'Interpreter','latex')
         set(gca,'XScale','log');
-        title('{\bf log}(abs. err.)/max.','Interpreter','latex')
+        title('{\bf log}(abs. err./max.)','Interpreter','latex')
         colorbar,
         %clim([-12 0])
-        sgtitle({regexprep(func2str(H),'_','-'); ['$[x_3,x_4]=[\sigma_r,\overline{r}]=[' regexprep(num2str(pp),'\s*',',') ']$']},'interpreter','latex','FontSize',FSZ);
+        sgtitle({regexprep(func2str(H),'_','-'); ['$[x_3,x_4]=[\phi,\overline{r}]=[' regexprep(num2str(pp),'\s*',',') ']$']},'interpreter','latex','FontSize',FSZ);
         drawnow
-        %fun.saveGIF(h,kk,name)
+        kk = kk + 1; fun.saveGIF(h,kk,name)
     end
 end
+%%
+ZAref   = @(x) fun.impedence_abs(H_alpha,H_beta, x(:,1), x(:,2), x(:,3), x(:,4));
+ZAapp   = @(x) fun.impedence_abs(r_alpha,r_beta, x(:,1), x(:,2), x(:,3), x(:,4));
 
+x1      = logspace(log10(w_bnd(1)),log10(w_bnd(2)),1e4)*(1+rand(1)/50);
+x2      = 0.7;
+x3      = logspace(log10(min(pore_mean_size_bnd)),log10(max(pore_mean_size_bnd)),40)*(1+rand(1)/100);
+x4      = .1;
+kk      = 0;
+col     = hsv(5);
+h=figure('Color','white'), hold on, grid on, axis tight
+for i4 = 1:length(x4)
+    for i3 = 1:length(x3)
+        for i2 = 1:numel(x2)
+            for i1 = 1:length(x1)
+                Abs_ref(i1,:) = ZAref([1i*x1(i1) x2(i2) x3(i3) x4(i4)]);
+                Abs_app(i1,:) = ZAapp([1i*x1(i1) x2(i2) x3(i3) x4(i4)]);
+            end
+            cla
+            h1=plot(x1,Abs_ref(:,2),'LineWidth',3);%,'Color',col(kk,:));
+            h2=plot(x1,Abs_app(:,2),'k--','LineWidth',3);
+            set(gca,'XScale','log')
+            xlabel('Frequency [rad/s]')
+            ylabel('Absorption coefficient')
+            ylim([0 1])
+            title(['$\{\sigma_r,\phi,\overline{r}\}=\{' num2str(x2(i2),2) ',' num2str(x3(i3),2) ',' num2str(x4(i4),2) '\}$'])
+            legend({'Original model' 'Rational approximation'},'Location','west')
+            drawnow
+            kk = kk + 1; fun.saveGIF(h,kk,'absorption',.2)
+        end
+    end
+end
