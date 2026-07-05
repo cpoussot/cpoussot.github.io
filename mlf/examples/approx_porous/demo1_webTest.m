@@ -17,44 +17,45 @@ porosity_bnd            = [.6 .99];
 pore_mean_size_bnd      = [1e-6 1e-2];
 pore_standard_dev_bnd   = [0 .5];
 %%% Interpolation points
-ip{1,1} = 1i*logspace(log10(w_bnd(1)),log10(w_bnd(2)),50);
-ip{2,1} = linspace(porosity_bnd(1),porosity_bnd(2),10);
-ip{3,1} = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),20);
-ip{4,1} = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),20);
+ip{2,1} = 1i*logspace(log10(w_bnd(1)),log10(w_bnd(2)),50);
+%ip{2,1} = linspace(porosity_bnd(1),porosity_bnd(2),10);
+ip{1,1} = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),40);
+%ip{4,1} = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),20);
 n = length(ip);
 for ii = 1:n
     p_c{ii} = ip{ii}(2:2:end);
     p_r{ii} = ip{ii}(1:2:end);
 end
 %%% Define the alpha and beta functions
-H_alpha = @(x) fun.dynamic_viscous_tortuosity(x(:,1), x(:,2), x(:,3), x(:,4));
-H_beta  = @(x) fun.dynamic_thermal_compressibility(x(:,1), x(:,2), x(:,3), x(:,4));
+%H_alpha = @(x) fun.dynamic_viscous_tortuosity(x(:,1), x(:,2), x(:,3), x(:,4));
+%H_beta  = @(x) fun.dynamic_thermal_compressibility(x(:,1), x(:,2), x(:,3), x(:,4));
+H_alpha = @(x) fun.dynamic_viscous_tortuosity(x(:,2), mean(porosity_bnd), x(:,1), mean(pore_standard_dev_bnd));
+H_beta  = @(x) fun.dynamic_thermal_compressibility(x(:,2), mean(porosity_bnd), x(:,1), mean(pore_standard_dev_bnd));
 %%% Data tensor
 [y,x,dim]   = mlf.make_tab_vec(H_alpha,p_c,p_r);
 tab_alpha   = mlf.vec2mat(y,dim);
 [y,x,dim]   = mlf.make_tab_vec(H_beta,p_c,p_r);
 tab_beta    = mlf.vec2mat(y,dim);
 %%% Alg. 1: direct pLoe [A/G/P-V, 2025]
-opt.method_null = 'svd0';
-opt.method      = 'full';
-opt.ord_obj     = [9 1 5 6];
+opt.method_null = 'svd';
+opt.method      = 'rec';
+opt.ord_obj     = [10 8];% 1];% 6];
 opt.data_min    = false;
 [r_alpha,imlf]  = mlf.alg1(tab_alpha,p_c,p_r,opt);
 titre_alpha     = ['mLF alg. 1, $r=[' regexprep(num2str(imlf.ord),'\s*',',') ']$']
-opt.ord_obj     = [8 1 6 5];
-[r_beta,imlf]   = mlf.alg1(tab_beta,p_c,p_r,opt);
-titre_beta      = ['mLF alg. 1, $r=[' regexprep(num2str(imlf.ord),'\s*',',') ']$']
-
-%%
+% opt.ord_obj     = [8 6];% 1];% 5];
+% [r_beta,imlf]   = mlf.alg1(tab_beta,p_c,p_r,opt);
+% titre_beta      = ['mLF alg. 1, $r=[' regexprep(num2str(imlf.ord),'\s*',',') ']$']
+%
 H = H_alpha; r = r_alpha; titre = titre_alpha; name = 'alpha';
-H = H_beta;  r = r_beta; titre = titre_beta; name = 'beta';
+%H = H_beta;  r = r_beta; titre = titre_beta; name = 'beta';
 
 %%% Plot some results
 N   = [51 50 20 3];
 x1  = logspace(log10(w_bnd(1)),log10(w_bnd(2)),N(1))*(1+rand(1)/50);
-x2  = linspace(porosity_bnd(1),porosity_bnd(2),N(2))*(1+rand(1)/50);
-x3  = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),N(3))*(1+rand(1)/50);
-x4  = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),N(4))*(1+rand(1)/50);
+%x2  = linspace(porosity_bnd(1),porosity_bnd(2),N(2))*(1+rand(1)/50);
+x2  = logspace(log10(pore_mean_size_bnd(1)),log10(pore_mean_size_bnd(2)),N(3))*(1+rand(1)/50);
+%x4  = linspace(pore_standard_dev_bnd(1),pore_standard_dev_bnd(2),N(4))*(1+rand(1)/50);
 
 %%%
 x1label = '$x_1=\omega$ [rad/s]';
@@ -62,12 +63,12 @@ x2label = '$x_2=\sigma_r$';
 [X,Y]   = meshgrid(x1,x2);
 h       = figure('Color','white');
 kk      = 0;
-for i4 = 1:length(x4)
-    for i3 = 1:length(x3)
+%for i4 = 1:length(x4)
+    %for i3 = 1:length(x3)
         for jj = 1:numel(x2)
             for ii = 1:length(x1)
-                pp              = [x3(i3) x4(i4)];
-                p               = [1i*x1(ii) x2(jj) pp];
+                pp              = [];% x4(i4)];
+                p               = [x2(jj) 1i*x1(ii)];% x3(i3)];
                 tab_ref         = H(p);
                 tab_app1        = r(p);
                 %
@@ -121,9 +122,9 @@ for i4 = 1:length(x4)
         %clim([-12 0])
         sgtitle({regexprep(func2str(H),'_','-'); ['$[x_3,x_4]=[\phi,\overline{r}]=[' regexprep(num2str(pp),'\s*',',') ']$']},'interpreter','latex','FontSize',FSZ);
         drawnow
-        kk = kk + 1; fun.saveGIF(h,kk,name)
-    end
-end
+        %kk = kk + 1; fun.saveGIF(h,kk,name)
+    %end
+%end
 %%
 ZAref   = @(x) fun.impedence_abs(H_alpha,H_beta, x(:,1), x(:,2), x(:,3), x(:,4));
 ZAapp   = @(x) fun.impedence_abs(r_alpha,r_beta, x(:,1), x(:,2), x(:,3), x(:,4));
