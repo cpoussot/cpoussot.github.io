@@ -121,7 +121,7 @@ for i4 = 1:length(x4)
         %clim([-12 0])
         sgtitle({regexprep(func2str(H),'_','-'); ['$[x_3,x_4]=[\phi,\overline{r}]=[' regexprep(num2str(pp),'\s*',',') ']$']},'interpreter','latex','FontSize',FSZ);
         drawnow
-        kk = kk + 1; fun.saveGIF(h,kk,name)
+        %kk = kk + 1; fun.saveGIF(h,kk,name)
     end
 end
 %%
@@ -152,7 +152,7 @@ for i4 = 1:length(x4)
             title(['$\{\sigma_r,\phi,\overline{r}\}=\{' num2str(x2(i2),2) ',' num2str(x3(i3),2) ',' num2str(x4(i4),2) '\}$'])
             legend({'Original model' 'Rational approximation'},'Location','west')
             drawnow
-            kk = kk + 1; fun.saveGIF(h,kk,'absorption',.2)
+            %kk = kk + 1; fun.saveGIF(h,kk,'absorption',.2)
         end
     end
 end
