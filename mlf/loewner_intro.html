@@ -43,16 +43,17 @@
 											Multivariate, dynamical systems play a pivotal role in many applied mathematical problems where the behavior of the quantity of interest is conditioned by multiple variables $n \in \mathbb N$. In real-life applications, in addition to the time ($t$) or frequency ($s=\imath \omega=\imath2\pi f)$, these variables also include parameters that account for physical characteristics such as mass, length (in mechanical systems), flow velocity, temperature, porosity (in fluid, sound, antenna and material sciences), Mach number, altitude (in aeronautical and space systems), chemical properties, surface nature (in biological, pollutant and climate systems), etc. 
 											A commonly shared engineering approach for the study, the understanding, and the optimization of these applications is to develop models, essentially based on dedicated software and/or experiments. These models are central for most engineering activities involving forecasting, uncertainty propagation, uncertain stability analysis, optimization in a broad sense, and are essential in any multi-query (model-based) optimization process. However in most cases, 
 											<ul>
-												<li>it turns out that such models are costly to run, both in terms of time and energy footprint involved (as an illustration, (i) pollutant models involve large eddy simulations (LES), fluid models involve direct numerical simulations (DNS); (ii) aeroelastic aircraft models require ground vibration tests (GVT) experiments, etc.), </li>
+												<li>it turns out that such models are costly to run, both in terms of time and energy footprint involved, </li>
+													<!-- (as an illustration, (i) pollutant models involve large eddy simulations (LES), fluid models involve direct numerical simulations (DNS); (ii) aeroelastic aircraft models require ground vibration tests (GVT) experiments, etc.), </li> -->
 												<li>their complexity limits the accuracy, scalability and applicability of state of the art methods, and </li>
 												<li>the heterogenous nature of each multi-physics system and the explicit sparse (un)availability of models and data is an important development hurdle. </li>
 											</ul>
-											The multivariable Loewner Framework (<code>mLF</code>) provides a complete data-driven method allowing fitting large-scale multivariate functions and tensors based on Loewner matrices. 
-											Before highlighting the <code>mLF</code> approach, we list two challenging illustrative applications: (i) the aircraft flutter modeling problem described by frequency-domain data and, (ii) the approximation of acoustic propagation in rigid-frame porous materials, described by irrational functions.
+											The <b>multivariable Loewner Framework (mLF)</b> provides a complete data-driven method allowing fitting large-scale multivariate functions and tensors based on Loewner matrices. 
+											Before highlighting the <b>mLF</b> approach, we list two challenging illustrative applications: (i) the aircraft flutter modeling problem described by frequency-domain data and, (ii) the approximation of acoustic propagation in rigid-frame porous materials, described by irrational functions.
 										</p>
 
 										<h3>Two practical multivariate applications</h3>
-										<h4>The aircraft flutter problem</h4>
+										<h4>(i) The aircraft flutter problem</h4>
 										<p>
 											First, we consider the flutter problem. Flutter is a potentially destructive phenomenon that occurs in flexible structures, such as bridges, buildings, and aeronautical structures, when immersed in a fluid flow field. 
 											It is a self-excited type of instability, characterized by the interaction of inertial, elastic, and aerodynamic forces acting on a structure. 
@@ -65,14 +66,14 @@
 										<p>
 											We assume that only input-output data are available. 
 											This results in a $3$-dimensional tensor $\mathcal T^{\otimes}_{3}\in \mathbb C^{300\times 10\times 10}$ along the variables $(s,{v},{m})$. 
-											By applying the {mLF}, an approximation of order $(21,1,1)$ along each variable ensues. 
+											By applying the <b>mLF</b>, an approximation of order $(21,1,1)$ along each variable ensues. 
 											The original and parametric reduced-order model frequency responses are shown in the figure below, resulting in an accurate model, appropriate for stability analysis and control design.
 										</p>
 										<div style="text-align: center;">
-											<img src="images/flutter_animation800.gif" width="100%"></a><br>
+											<img src="images/flutter_animation800.gif" width="90%"></a><br>
 										</div>
 
-										<h4>The acoustic-porous problem</h4>
+										<h4>(ii) The acoustic-porous problem</h4>
 										<p>
 											Next, we analyze the propagation of acoustic waves in rigid-frame porous materials. 
 											This involves  equivalent fluid model, depending on multiple parameters such as porosity and permeability.  
@@ -83,11 +84,11 @@
 										</p>
 										<p>
 											Again, considering that only input-output measurements are available, the data is a $4$-dimensional tensor $\mathbb T^\otimes_{4}\in \mathbb C^{50\times 10\times 20\times 20}$ along the variables $(\omega,{\sigma_r},{\phi},{\overline{r}})$. 
-											Applying {mLF},  approximations of order $(9,1,5,6)$ for the $\alpha$ and $(8,1,6,5)$ for the $\beta$ function are conducted in seconds. 
+											Applying <b>mLF</b>,  approximations of order $(9,1,5,6)$ for the $\alpha$ and $(8,1,6,5)$ for the $\beta$ function are conducted in seconds. 
 											Computing the material impedance ($Z$) and absorption ($A$) coefficients leads to the original and parametric rational reduced-order model frequency responses as shown in the figure below, resulting in an accurate model, appropriate for time-domain simulation and analysis.
 										</p>
 										<div style="text-align: center;">
-											<img src="images/porous_animation800.gif" width="100%"></a><br>
+											<img src="images/porous_animation800.gif" width="90%"></a><br>
 										</div>
 
 
@@ -99,8 +100,8 @@
 											In the multi-dimensional setting, we refer to it as $n$-D tensor-based and $n$-variate model-based approximation. 
 										</p>
 										<p>
-											Let us consider an unknown $n$-variable function $H(x_{1},x_{2},\cdots,x_{n})$, representing a process, an experimental setup, or any software simulation tool. 
-											Let us assume that $H$ can be evaluated over a finite discretization grid along each variable, each with finite dimensions $\{N_1,N_2,\dots,N_n\}\in\mathbb N$, thus leading to a tensorized data grid $\mathcal T^\otimes_n \in  \mathbb C^{N_1\times N_2\times \cdots \times N_n}$. 
+											Let us consider an unknown $n$-variable function $f(x_{1},x_{2},\cdots,x_{n})$, representing a process, an experimental setup, or any software simulation tool. 
+											Let us assume that $f$ can be evaluated over a finite discretization grid along each variable, each with finite dimensions $\{N_1,N_2,\dots,N_n\}\in\mathbb N$, thus leading to a tensorized data grid $\mathcal T^\otimes_n \in  \mathbb C^{N_1\times N_2\times \cdots \times N_n}$. 
 										</p>
 										$$
 										\left.
@@ -119,7 +120,7 @@
 											</div>
 										</p>
 										<p>
-											The ultimate objective is to find $G(x_{1},x_{2},\cdots,x_{n})$ that approximates or recovers $H(x_{1},x_{2},\cdots,x_{n})$ and its intrinsic properties, without any prior knowledge on $H$. 
+											The ultimate objective is to find $g(x_{1},x_{2},\cdots,x_{n})$ that approximates or recovers $f(x_{1},x_{2},\cdots,x_{n})$ and its intrinsic properties, without any prior knowledge on $H$. 
 											Within the model's numerous potential structures, multivariate rational are good candidates since they are directly tailored to integrate efficient existing simulation, control, analysis, and optimization tools, based on scalable linear algebra numerical methods. 
 										</p>
 
@@ -132,7 +133,7 @@
 											$$
 											where $x_{l}(j_l)$ denotes the $l$-th variable ($l=1,\cdots,n$); 
 											$\lambda_{l}\in\mathbb C$ is the  $j_l$-th interpolation point along the $l$-th variable (being a splitting of the original data, namely the column $\lambda_{l}(j_l)$ and row $\mu_{l}(i_l)$ data;  
-											$w({j_1,\cdots,j_n})\in\mathbb C$ is the evaluation of the unknown $H$ at $(\lambda_{1}(j_1),\cdots,\lambda_{n}(j_n))$; 
+											$w({j_1,\cdots,j_n})\in\mathbb C$ is the evaluation of the unknown $f$ at $(\lambda_{1}(j_1),\cdots,\lambda_{n}(j_n))$; 
 											and $c({j_1,\cdots,j_n})\in\mathbb C$ are the corresponding barycentric coefficients, being the entries of the right null-space of the $n$-D Loewner matrix $\mathbb L_n\in\mathbb C^{Q\times K}$ (with $Q=q_1q_2\dots q_n$ rows and $K=k_1k_2\dots k_n$ columns), an operator linking data to a matrix as
 											$$
 											\begin{array}{ccl}
@@ -142,43 +143,40 @@
 											$$
 											This setup is known as the multivariate Loewner Framework (mLF). 
 											However, with increasing number of variable $n$ and tensor dimensions $N_l$, the Loewner matrix construction, storage, and null-space computation costs explode. 
-											The development of a numerical scheme allowing the construction of $G$ becomes essential to solve real-life problems in a reasonable time and with low computational energy and storage costs. 
+											The development of a numerical scheme allowing the construction of $g$ becomes essential to solve real-life problems in a reasonable time and with low computational energy and storage costs. 
 										</p>
 
 										<h3>Tame the curse of dimensionality and rational KST</h3>
 										<p>
-											According to Richard E. Bellman, the "curse of dimensionality" (COD) refers to the phenomenon occurring when analyzing or ordering data in large dimensional spaces, which are not present in lower cases \cite{BellmanBook:1966}. In \cite{AGPV:2025}, the COD term refers to both the computational (floating-point arithmetic) and also to the storage (size on the disk) limitations encountered when constructing multivariate rational approximations from large multi-dimensional tensors. The following important contributions are established:
+											According to Richard E. Bellman, the "curse of dimensionality" (COD) refers to the phenomenon occurring when analyzing or ordering data in large dimensional spaces, which are not present in lower cases [Bellman, 1966]. In [Antoulas et al. 2025], the COD term refers to both the computational (floating-point arithmetic) and also to the storage (size on the disk) limitations encountered when constructing multivariate rational approximations from large multi-dimensional tensors. The following important contributions are established:
 											<ul>
-												<li>mLF provides a solution for rational interpolation of multivariate functions and tensors.</li>
-												<li>mLF addresses the COD occurring essentially when the number of variables and tensor size increase, thanks to the variable decoupling achieved by the solution of several 1-D Loewner problems instead of one large-scale $n$-D Loewner problem (see Figure-box I). As a byproduct, taming the curse of dimensionality 
-													<ul>
-														<li> in computational complexity, reducing from $\mathcal O(K^3)$ to $\mathcal O(K^{2.29})$ for $n=2$, $\mathcal O(K^{1.94})$ for $n=3$, up to $\mathcal O(K^{1.06})$ for $n=50$\dots; </li>
+												<li><b>mLF provides a solution for rational interpolation</b> of multivariate functions and tensors.</li>
+												<li><b>mLF addresses the Curse of Dimensionality</b> occurring essentially when the number of variables and tensor size increase, thanks to the variable decoupling achieved by the solution of several 1-D Loewner problems instead of one large-scale $n$-D Loewner problem (see Figure 3-box I). As a byproduct, taming the curse of dimensionality 
+													<ol>
+														<li> in computational complexity, reducing from $\mathcal O(K^3)$ to $\mathcal O(K^{2.29})$ for $n=2$, $\mathcal O(K^{1.94})$ for $n=3$, up to $\mathcal O(K^{1.06})$ for $n=50$...; </li>
 														<li> in storage, limited to the largest 1-D Loewner matrix, i.e. $\mathbb L_1\in\mathbb C^{\max_{l=1,\cdots n} k_l \times k_l}$ instead of $\mathbb L_n^{Q\times K}$; and </li>
 														<li> in numerical accuracy, low complexity 1-D Loewner matrices null-space computation are solely needed, is achieved.</li>
-													</ul></li>
-												<li>mLF provides a numerically tractable solution to the  Kolmogorov Superposition Theorem (KST) restricted to rational functions (see Figure-box II). A consequence is a direct connection with Kolmogorov-Arnold Networks (KANs), with Lagrange basis activation functions.</li>
-												<li>mLF allows the construction of a realization associated with both the Lagrange basis  or its equivalent monomial basis (see Figure-box III), thus allowing  uncertain time-domain simulations and direct connection with control theory.</li>
-												<li>mLF also permits a Linear Fractional Representation (LFR) form (see Figure-box IV), thus bridging the gap between tensor approximation with worst-case computation and robust control. </li>
-												<li>mLF provides an accurate computed way faster than most of the existing methods, by exploiting the decoupling property directly from data.</li>
+													</ol></li>
+												<li><b>mLF provides a numerically tractable solution to the Kolmogorov Superposition Theorem (KST) restricted to rational functions (see Figure 3-box II)</b>. 
+													A consequence is a direct connection with Kolmogorov-Arnold Networks (KANs), with Lagrange basis activation functions.</li>
+												<li><b>mLF allows the construction of a realization</b> associated with both the Lagrange basis  or its equivalent monomial basis <b>(see Figure 3-box III)</b>, thus allowing  uncertain time-domain simulations and direct connection with control theory.</li>
+												<li><b>mLF also permits a Linear Fractional Representation (LFR) form (see Figure 3-box IV)</b>, thus bridging the gap between tensor approximation with worst-case computation and robust control. </li>
+												<li><b>mLF</b> provides an accurate computed way faster than most of the existing methods, by exploiting the decoupling property directly from data.</li>
 											</ul>
 										</p>
-
-										<h3>Outlook</h3>
-										<p>
-											The mLF provides a solution to the approximation of multivariate (in $n$ variables) functions and $n$-D tensors. 
-											As it does not suffer from the curse of dimensionality, it opens the path to application to very complex real-life problems. 
-											Associated problems include uncertain and robust systems theory, identification, general approximation approach, nonlinear eigenvalue approximation, etc. 
-											Additional problems to consider are numerical issues such as conditioning, interpolation point selection, stability, and structure preservation, analysis of the minimality properties, and extension to multi-input multi-output configurations, to cite a few. 
-											The mLF package provides an open-source and turnkey package to implement and discover the features introduced. 
-											Fortran code (interfaced with MATLAB and Python) is also available in MDSPACK. 
-										</p>
-
-
-
 										<div style="text-align: center;">
 											<img src="images/mLF_map.png" width="90%"></a><br>
 										</div>
 
+										<h3>Outlook</h3>
+										<p>
+											The <b>mLF</b> provides a solution to the approximation of multivariate (in $n$ variables) functions and $n$-D tensors. 
+											As it does not suffer from the curse of dimensionality, it opens the path to application to very complex real-life problems. 
+											Associated problems include uncertain and robust systems theory, identification, general approximation approach, nonlinear eigenvalue approximation, etc. 
+											Additional problems to consider are numerical issues such as conditioning, interpolation point selection, stability, and structure preservation, analysis of the minimality properties, and extension to multi-input multi-output configurations, to cite a few. 
+											The <b>mLF</b> package provides an open-source and turnkey package to implement and discover the features introduced. 
+											Fortran code (interfaced with MATLAB and Python) is also available in <a href="https://mordigitalsystems.fr/static/mdspack_html/MDSpack-guide.html"><b>MDSPACK</b></a>. 
+										</p>
 									</div>
 								</section>
 								
