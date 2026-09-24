@@ -46,7 +46,7 @@ opt.ord_obj     = [8 1 6 5];
 titre_beta      = ['mLF alg. 1, $r=[' regexprep(num2str(imlf.ord),'\s*',',') ']$']
 
 %%
-H = H_alpha; r = r_alpha; titre = titre_alpha; name = 'alpha';
+%H = H_alpha; r = r_alpha; titre = titre_alpha; name = 'alpha';
 H = H_beta;  r = r_beta; titre = titre_beta; name = 'beta';
 
 %%% Plot some results
@@ -119,8 +119,9 @@ for i4 = 1:length(x4)
         title('{\bf log}(abs. err./max.)','Interpreter','latex')
         colorbar,
         %clim([-12 0])
-        sgtitle({regexprep(func2str(H),'_','-'); ['$[x_3,x_4]=[\phi,\overline{r}]=[' regexprep(num2str(pp),'\s*',',') ']$']},'interpreter','latex','FontSize',FSZ);
+        sgtitle({regexprep(func2str(H),'_','-'); regexprep(['$[x_3,x_4]=[\phi,\overline{r}]=[' regexprep(num2str(pp),'\s*',',') ']$'],'e\+?(-?\d+)',' \\cdot 10^{$1}')},'interpreter','latex','FontSize',FSZ);
         drawnow
+        kk = kk + 1; fun.savePDF([name '_' num2str(kk)],.7)
         %kk = kk + 1; fun.saveGIF(h,kk,name)
     end
 end
@@ -134,7 +135,7 @@ x3      = logspace(log10(min(pore_mean_size_bnd)),log10(max(pore_mean_size_bnd))
 x4      = .1;
 kk      = 0;
 col     = hsv(5);
-h=figure('Color','white'), hold on, grid on, axis tight
+h=figure('Color','white'); hold on, grid on, axis tight
 for i4 = 1:length(x4)
     for i3 = 1:length(x3)
         for i2 = 1:numel(x2)
@@ -149,9 +150,10 @@ for i4 = 1:length(x4)
             xlabel('Frequency [rad/s]')
             ylabel('Absorption coefficient')
             ylim([0 1])
-            title(['$\{\sigma_r,\phi,\overline{r}\}=\{' num2str(x2(i2),2) ',' num2str(x3(i3),2) ',' num2str(x4(i4),2) '\}$'])
+            title(regexprep(['$\{\sigma_r,\phi,\overline{r}\}=\{' num2str(x2(i2),2) ',' num2str(x3(i3),2) ',' num2str(x4(i4),2) '\}$'],'e\+?(-?\d+)',' \\cdot 10^{$1}'))
             legend({'Original model' 'Rational approximation'},'Location','west')
             drawnow
+            kk = kk + 1; fun.savePDF(['absorption_' num2str(kk)],.7)
             %kk = kk + 1; fun.saveGIF(h,kk,'absorption',.2)
         end
     end
